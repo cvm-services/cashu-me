@@ -202,6 +202,7 @@ export default defineComponent({
   },
   methods: {
     ...mapActions(useMintsStore, ["selectMintUrl"]),
+    ...mapActions(useWalletStore, ["resetInvoiceData"]),
     toggleReceiveEcashDrawer: function () {
       this.showReceiveDialog = false;
       this.showReceiveTokens = false;
@@ -236,11 +237,8 @@ export default defineComponent({
         return;
       }
       console.log("##### showInvoiceCreateDialog");
+      this.resetInvoiceData(mintResult.method);
       this.invoiceData.amount = "";
-      this.invoiceData.request = "";
-      this.invoiceData.hash = "";
-      this.invoiceData.memo = "";
-      this.invoiceData.type = mintResult.method;
       this.showCreateInvoiceDialog = true;
       this.showReceiveDialog = false;
     },
@@ -258,11 +256,7 @@ export default defineComponent({
         this.showReceiveDialog = false;
         return;
       }
-      this.invoiceData.amount = 0;
-      this.invoiceData.request = "";
-      this.invoiceData.hash = "";
-      this.invoiceData.memo = "";
-      this.invoiceData.type = PaymentMethod.Onchain;
+      this.resetInvoiceData(PaymentMethod.Onchain);
       this.showCreateInvoiceDialog = true;
       this.showReceiveDialog = false;
     },

@@ -206,4 +206,70 @@ describe("payment history store", () => {
       })
     );
   });
+
+  it("creates a mint invoice after viewing a reactive outgoing payment", async () => {
+    const paymentHistoryStore = usePaymentHistoryStore();
+    await paymentHistoryStore.addPayment({
+      quote: "old-melt-q",
+      amount: -12,
+      request: "lnbc-old",
+      memo: "Outgoing invoice",
+      date: "2026-03-10T12:00:00.000Z",
+      status: "pending",
+      mint: "https://mint.example",
+      unit: "sat",
+      type: PaymentMethod.Bolt11,
+      meltQuote: {
+        quote: "old-melt-q",
+        amount: 10,
+        fee_reserve: 2,
+        unit: "sat",
+        state: "UNPAID",
+        expiry: 0,
+        change: [],
+      },
+      meltChangeOutputData: [],
+    });
+
+    const walletStore = useWalletStore();
+    walletStore.invoiceData = paymentHistoryStore.invoiceHistory[0];
+    expect(walletStore.invoiceData.meltQuote).toBeDefined();
+    expect(() =>
+      structuredClone(walletStore.invoiceData.meltChangeOutputData)
+    ).toThrow();
+
+    const mintWallet = {
+      loadMint: vi.fn(),
+      getMintInfo: () => ({
+        isSupported: () => ({ supported: false }),
+      }),
+      createMintQuoteBolt11: vi.fn(async () => ({
+        quote: "new-mint-q",
+        request: "lnbc-new",
+        unit: "sat",
+        amount: 21,
+        state: "UNPAID",
+        expiry: null,
+      })),
+      mint: { mintUrl: "https://mint.example" },
+      unit: "sat",
+    };
+
+    await expect(
+      walletStore.requestMintBolt11(21, mintWallet as any)
+    ).resolves.toEqual(expect.objectContaining({ quote: "new-mint-q" }));
+
+    const persistedPayment = await cashuDb.paymentHistory.get(
+      "mint:new-mint-q"
+    );
+    expect(persistedPayment).toEqual(
+      expect.objectContaining({
+        direction: "mint",
+        method: PaymentMethod.Bolt11,
+        amount: 21,
+      })
+    );
+    expect(walletStore.invoiceData).not.toHaveProperty("meltQuote");
+    expect(walletStore.invoiceData).not.toHaveProperty("meltChangeOutputData");
+  });
 });
