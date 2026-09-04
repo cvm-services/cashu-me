@@ -150,6 +150,24 @@ export type InvoiceHistory = Invoice & {
   direction?: "mint" | "melt";
 };
 
+function createIncomingInvoiceDraft(
+  method: PaymentMethod = PaymentMethod.Bolt11
+): InvoiceHistory {
+  return {
+    amount: 0,
+    request: "",
+    quote: "",
+    memo: "",
+    date: "",
+    status: "pending",
+    mint: "",
+    unit: "",
+    type: method,
+    method,
+    direction: "mint",
+  };
+}
+
 type KeysetCounter = {
   id: string;
   counter: number;
@@ -213,7 +231,7 @@ export const useWalletStore = defineStore("wallet", {
         [] as { mnemonic: string; keysetCounters: KeysetCounter[] }[]
       ),
       sharedCounterSource: null as CounterSource | null,
-      invoiceData: {} as InvoiceHistory,
+      invoiceData: createIncomingInvoiceDraft(),
       activeWebsocketConnections: 0,
       payInvoiceData: {
         blocking: false,
@@ -293,6 +311,9 @@ export const useWalletStore = defineStore("wallet", {
       const paymentHistoryStore = usePaymentHistoryStore();
       this.invoiceHistory =
         paymentHistoryStore.invoiceHistory as InvoiceHistory[];
+    },
+    resetInvoiceData(method: PaymentMethod = PaymentMethod.Bolt11) {
+      this.invoiceData = createIncomingInvoiceDraft(method);
     },
     async addPaymentHistory(invoice: InvoiceHistory) {
       const paymentHistoryStore = usePaymentHistoryStore();

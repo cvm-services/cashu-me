@@ -82,6 +82,7 @@ export type LegacyInvoiceHistory = {
   unit: string;
   type?: PaymentMethod;
   method?: PaymentMethod;
+  direction?: PaymentDirection;
   mintQuote?: any;
   meltQuote?: any;
   label?: string;
@@ -153,6 +154,9 @@ function inferPaymentType(
 }
 
 function inferDirection(invoice: LegacyInvoiceHistory): PaymentDirection {
+  if (invoice.direction === "mint" || invoice.direction === "melt") {
+    return invoice.direction;
+  }
   return invoice.amount < 0 || Boolean(invoice.meltQuote) ? "melt" : "mint";
 }
 
