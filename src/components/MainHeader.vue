@@ -12,6 +12,7 @@
         :disable="uiStore.globalMutexLock"
       />
       <q-toolbar-title></q-toolbar-title>
+      <q-btn flat dense icon="miscellaneous_services" color="primary" :label="$t('services.title')" to="/services" />
       <transition
         appear
         enter-active-class="animated wobble"

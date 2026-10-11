@@ -4,6 +4,15 @@ const routes = [
     component: () => import("layouts/MainLayout.vue"),
     children: [
       { path: "", component: () => import("src/pages/WalletPage.vue") },
+      { path: "services", component: () => import("src/pages/ServicesPage.vue") },
+    ],
+  },
+
+  {
+    path: "/console",
+    component: () => import("layouts/FullscreenLayout.vue"),
+    children: [
+      { path: "", component: () => import("src/pages/ServicesConsolePage.vue") },
     ],
   },
   {
