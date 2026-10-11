@@ -27,7 +27,7 @@ on:
       - "vitest.config.js"
       - "package.json"
       - "package-lock.json"
-      - "Makefile"
+      - "pwa.mk"
       - ".github/workflows/pwa-pages.yml"
   workflow_dispatch:
 
