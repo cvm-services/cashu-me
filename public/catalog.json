@@ -1,0 +1,28 @@
+{
+  "entries": [
+    {
+      "id": "example-cvm",
+      "name": "Example ContextVM",
+      "description": "A catalogue fixture service.",
+      "announcement": "This fixture demonstrates the static catalogue contract.",
+      "price_sats": 100,
+      "fiat": "€0.10",
+      "npub": "npub1example",
+      "available": true
+    },
+    {
+      "id": "whatsapp-cvm",
+      "name": "WhatsApp CVM",
+      "description": "WhatsApp delivery is not connected yet.",
+      "announcement": "Unavailable until the WhatsApp rail reports available=true.",
+      "price_sats": 250,
+      "fiat": "€0.25",
+      "transport": "whatsapp",
+      "npub": "npub1example",
+      "available": false
+    }
+  ],
+  "allowlist": ["npub1example"],
+  "class_tally": {},
+  "counts": {"entries": 2}
+}
