@@ -75,9 +75,34 @@ module.exports = configure(function (/* ctx */) {
 
       // rebuildCache: true, // rebuilds Vite/linter/etc cache on startup
 
-      // publicPath: '/',
+      // Deploy-agnostic base path, injected at build time so ONE codebase (and
+      // ideally one artifact) can be served from a domain root (VPS Caddy
+      // vhost, GitHub Pages custom domain) or from a project sub-path
+      // (https://<user>.github.io/cashu.me/).
+      //   PUBLIC_PATH=/           -> domain root   (pwa.orangesync.tech, pwa-vps.*)
+      //   PUBLIC_PATH=/cashu.me/  -> github.io project path fallback
+      publicPath: process.env.PUBLIC_PATH || "/",
+      // vueRouterBase,
+      // vueDevtools,
+      // vueOptionsAPI: false,
+
+      // rebuildCache: true, // rebuilds Vite/linter/etc cache on startup
+
       // analyze: true,
-      // env: {},
+      // Build-time injected endpoint config for the Services surface.
+      // One codebase, two hosts: only the base path (above) and these values
+      // may differ between the GitHub Pages build and the VPS build.
+      // See src/js/services-endpoints.ts and .github/workflows/pwa-pages.yml.
+      env: {
+        CVM_CATALOG_URL:
+          process.env.CVM_CATALOG_URL ||
+          "https://cvm.orangesync.tech/catalog.json",
+        CVM_RELAYS:
+          process.env.CVM_RELAYS ||
+          "wss://relay1.orangesync.tech,wss://relay2.orangesync.tech",
+        CVM_NAMESPACE: process.env.CVM_NAMESPACE || "cvm-services",
+        SERVICES_DEPLOY_TARGET: process.env.SERVICES_DEPLOY_TARGET || "local",
+      },
       // rawDefine: {}
       // ignorePublicFolder: true,
       // minify: false,

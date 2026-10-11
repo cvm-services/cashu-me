@@ -1,0 +1,138 @@
+name: PWA — one artifact, two hosts
+
+# Publishes the installable Cashu.me PWA fork to BOTH:
+#   * GitHub Pages  (https://pwa.orangesync.tech)      — free HTTPS, zero infra
+#   * the VPS       (https://pwa-vps.orangesync.tech)  — self-hosted Caddy
+# from ONE build. The build job produces exactly one tarball, uploads it to
+# Pages AND publishes those same bytes as a release asset; the Ansible role
+# `cashu_pwa` in OpenTollGate/tollgate-infrastructure-kit downloads that release
+# asset and verifies the recorded sha256, so the two hosts serve identical bytes.
+#
+# Injectables (the ONLY things allowed to differ per host):
+#   PUBLIC_PATH            base path — "/" for both of our hostnames
+#   CVM_CATALOG_URL        static CEP-6 catalogue
+#   CVM_RELAYS             relays for CEP-6 discovery + NIP-44 gift wrap
+#   CVM_NAMESPACE          advertised CVM namespace
+#   SERVICES_DEPLOY_TARGET diagnostics stamp baked into the artifact
+# See src/js/services-endpoints.ts and quasar.config.js.
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - "src/**"
+      - "src-pwa/**"
+      - "public/**"
+      - "quasar.config.js"
+      - "vitest.config.js"
+      - "package.json"
+      - "package-lock.json"
+      - "Makefile"
+      - ".github/workflows/pwa-pages.yml"
+  workflow_dispatch:
+
+permissions:
+  contents: write # publish the dist release asset consumed by the VPS leg
+  pages: write
+  id-token: write
+
+concurrency:
+  group: pwa-pages-${{ github.ref }}
+  cancel-in-progress: true
+
+env:
+  # Both hostnames serve this artifact from a domain root.
+  PUBLIC_PATH: "/"
+  CVM_CATALOG_URL: "https://cvm.orangesync.tech/catalog.json"
+  CVM_RELAYS: "wss://relay1.orangesync.tech,wss://relay2.orangesync.tech"
+  CVM_NAMESPACE: "cvm-services"
+  PWA_ARTIFACT: "dist-pwa.tar.gz"
+
+jobs:
+  build:
+    name: Build the single PWA artifact
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Build PWA (root base path)
+        env:
+          SERVICES_DEPLOY_TARGET: "github-pages"
+        run: npm run build:pwa
+
+      - name: Assert the built artifact is a PWA served from the root
+        run: |
+          set -euo pipefail
+          test -f dist/pwa/index.html
+          test -f dist/pwa/manifest.webmanifest || test -f dist/pwa/manifest.json
+          test -f dist/pwa/sw.js
+          # Root base path: assets must not be absolute-prefixed to a sub-path.
+          ! grep -q '"/cashu.me/' dist/pwa/index.html
+          grep -qE '(src|href)="(/|\./)' dist/pwa/index.html
+
+      - name: Package and hash the artifact (the bytes both hosts will serve)
+        run: |
+          set -euo pipefail
+          tar --numeric-owner --owner=0 --group=0 -czf "$PWA_ARTIFACT" -C dist/pwa .
+          sha256sum "$PWA_ARTIFACT" > "$PWA_ARTIFACT.sha256"
+          echo "artifact sha256:"; cat "$PWA_ARTIFACT.sha256"
+          ls -l "$PWA_ARTIFACT"
+
+      - name: Publish the same bytes for the VPS leg (release asset)
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          set -euo pipefail
+          gh release view pwa-dist-latest >/dev/null 2>&1 || \
+            gh release create pwa-dist-latest \
+              --title "PWA dist (latest)" \
+              --notes "Rolling release of the single PWA artifact served by both https://pwa.orangesync.tech (GitHub Pages) and https://pwa-vps.orangesync.tech (VPS). Published by .github/workflows/pwa-pages.yml at commit \${{ github.sha }}. Verify with dist-pwa.tar.gz.sha256."
+          gh release upload pwa-dist-latest "$PWA_ARTIFACT" "$PWA_ARTIFACT.sha256" --clobber
+
+      - name: Upload Pages artifact
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: dist/pwa
+
+      - name: Upload workflow artifact (inspectable, 14 days)
+        uses: actions/upload-artifact@v4
+        with:
+          name: pwa-dist
+          path: |
+            dist-pwa.tar.gz
+            dist-pwa.tar.gz.sha256
+          retention-days: 14
+
+  deploy-pages:
+    name: Deploy to GitHub Pages
+    needs: build
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v4
+
+      - name: Verify the live Pages URL serves the PWA
+        env:
+          PAGE_URL: ${{ steps.deployment.outputs.page_url }}
+        run: |
+          set -euo pipefail
+          echo "deployed: $PAGE_URL"
+          curl -fsS -o /dev/null -w "index: %{http_code}\n" "$PAGE_URL"
+          curl -fsS -o /dev/null -w "manifest: %{http_code} %{content_type}\n" \
+            "${PAGE_URL%/}/manifest.webmanifest" || \
+            curl -fsS -o /dev/null -w "manifest.json: %{http_code} %{content_type}\n" \
+              "${PAGE_URL%/}/manifest.json"
