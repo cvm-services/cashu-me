@@ -22,3 +22,22 @@ both token sets. Persisted in `localStorage["theme"]`; falls back to the OS
 - Design tokens confirmed present in the built bundle (`assets/index.*.css`).
 - Light theme rendered in a headless browser against the real `dist/pwa`: Services page with both cards, sats-first pricing, WhatsApp greyed with its reason.
 - `npm run lint` clean; `npm run build:pwa` exit 0.
+
+## Fresh-install behaviour (fixed 2026-10-12)
+
+Reaching the app on a phone with empty localStorage exposed two pre-existing bugs
+that made the fork unusable before onboarding:
+
+1. **`TypeError: Cannot read properties of undefined (reading 'slice')`** followed by
+   **`Error: Invalid mnemonic`**, thrown from `walletSeedGenerateKeyPair()` via the
+   `seed` getter. `WalletPage.created()` calls `subscribeToNip17DirectMessages()`, which
+   derives a keypair from the seed — but on a fresh install there is no mnemonic, so
+   `mnemonicToSeedSync("")` throws and the page dies before onboarding can complete.
+2. **`#/welcome#/`** — `showWelcomePage()` appended `window.location.hash` to a router
+   push. Under the hash router the hash *is* the path, so the user never landed on
+   `/welcome`.
+
+Fixes: `seed` returns empty bytes before onboarding and a new `hasSeed` getter gates
+every seed-derived path; `walletSeedGenerateKeyPair` bails out rather than signing with
+all-zero bytes; the redirect no longer appends the hash. Covered by
+`test/vitest/__tests__/walletSeedFreshInstall.test.ts` (4 tests).
