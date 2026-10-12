@@ -291,7 +291,24 @@ export const useWalletStore = defineStore("wallet", {
     };
   },
   getters: {
+    /**
+     * True once the wallet has a usable mnemonic. Callers that derive keys from
+     * the seed (Nostr signers, DM subscriptions, NIP-60) MUST check this before
+     * touching `seed`, otherwise a fresh install throws "Invalid mnemonic".
+     */
+    hasSeed(): boolean {
+      return typeof this.mnemonic === "string" && this.mnemonic.trim().length > 0 && this.mnemonic.trim().split(/\s+/).length >= 12;
+    },
+    /**
+     * BIP-39 seed bytes, or an empty array before onboarding.
+     *
+     * Returning empty bytes (instead of throwing) keeps page `created()` hooks
+     * alive on a fresh install: the wallet shows onboarding and the seed-derived
+     * code paths no-op until a mnemonic exists. An all-zero keypair is never
+     * published because `walletSeedGenerateKeyPair` refuses to run without a seed.
+     */
     seed(): Uint8Array {
+      if (!this.hasSeed) return new Uint8Array(0);
       return mnemonicToSeedSync(this.mnemonic);
     },
   },
