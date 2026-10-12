@@ -12,6 +12,18 @@
         :disable="uiStore.globalMutexLock"
       />
       <q-toolbar-title></q-toolbar-title>
+      <q-btn
+        flat
+        dense
+        round
+        size="0.8em"
+        :icon="themeIcon"
+        color="primary"
+        :aria-label="$t('MainHeader.theme.toggle')"
+        :title="$t('MainHeader.theme.toggle')"
+        data-testid="theme-toggle"
+        @click="onToggleTheme"
+      />
       <q-btn flat dense icon="miscellaneous_services" color="primary" :label="$t('services.title')" to="/services" />
       <transition
         appear
@@ -74,9 +86,11 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, ref } from "vue";
+import { defineComponent, ref, computed } from "vue";
 import { useRouter } from "vue-router";
 import { useUiStore } from "src/stores/ui";
+import { Dark } from "quasar";
+import { toggleTheme, applyStoredTheme } from "src/js/theme";
 
 export default defineComponent({
   name: "MainHeader",
@@ -85,6 +99,15 @@ export default defineComponent({
     const uiStore = useUiStore();
     const router = useRouter();
     const countdown = ref(0);
+    // Ensure the in-memory theme matches storage/system even if the boot file
+    // was skipped (e.g. component mounted in isolation in a test).
+    applyStoredTheme();
+    // Dark.isActive is not a Vue ref, so mirror it locally to make the icon reactive.
+    const isDark = ref(Dark.isActive);
+    const themeIcon = computed(() => (isDark.value ? "light_mode" : "dark_mode"));
+    const onToggleTheme = () => {
+      isDark.value = toggleTheme();
+    };
     let countdownInterval;
 
     const goToSettings = () => {
@@ -121,6 +144,8 @@ export default defineComponent({
       reload,
       countdown,
       uiStore,
+      themeIcon,
+      onToggleTheme,
     };
   },
 });
