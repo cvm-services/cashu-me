@@ -59,9 +59,10 @@
           <div class="text-h6">{{ $t("services.confirmTitle") }}</div>
           <div class="text-h6 text-weight-bold q-mt-md">{{ selected && selected.price }} sats</div>
           <div class="text-caption text-grey-7">{{ selected && selected.fiat }}</div>
-          <q-banner class="bg-blue-1 text-blue-10 q-mt-md">{{ $t("services.paymentNotice") }}</q-banner>
+          <q-banner v-if="selected && selected.available" class="bg-blue-1 text-blue-10 q-mt-md">{{ $t("services.paymentNotice") }}</q-banner>
+          <q-banner v-else class="bg-orange-1 text-orange-10 q-mt-md">{{ (selected && selected.unavailableReason) || $t("services.notWired") }}</q-banner>
         </q-card-section>
-        <q-card-actions align="right"><q-btn flat :label="$t('global.actions.cancel.label')" v-close-popup /><q-btn color="primary" :label="$t('services.pay')" @click="paymentNotice = true" /></q-card-actions>
+        <q-card-actions align="right"><q-btn flat :label="$t('global.actions.cancel.label')" v-close-popup /><q-btn color="primary" :disable="!selected || !selected.available" :label="$t('services.pay')" @click="paymentNotice = true" /></q-card-actions>
       </q-card>
     </q-dialog>
     <q-dialog v-model="paymentNotice"><q-card><q-card-section class="text-body1">{{ $t("services.notWired") }}</q-card-section><q-card-actions align="right"><q-btn flat :label="$t('global.actions.close.label')" v-close-popup /></q-card-actions></q-card></q-dialog>
@@ -84,7 +85,7 @@
 <script lang="ts">
 import { defineComponent } from "vue";
 
-type CatalogService = { id: string; name: string; description: string; announcement: string; price: number; fiat: string; available: boolean; npub?: string };
+type CatalogService = { id: string; name: string; description: string; announcement: string; price: number; fiat: string; available: boolean; unavailableReason?: string; npub?: string };
 
 export default defineComponent({
   name: "ServicesPage",
@@ -110,7 +111,7 @@ export default defineComponent({
       const catalog = await response.json();
       const allowlist = new Set(catalog.allowlist || []);
       this.services = (catalog.entries || []).filter((entry: any) => !entry.npub || allowlist.size === 0 || allowlist.has(entry.npub)).map((entry: any) => ({
-        id: entry.id || entry.npub || entry.name, name: entry.name || entry.title || "Unnamed service", description: entry.description || entry.summary || "", announcement: entry.announcement || entry.description || "", price: Number(entry.price_sats || entry.price || 0), fiat: entry.fiat || "", available: entry.available !== false && entry.transport !== "whatsapp", npub: entry.npub,
+        id: entry.id || entry.npub || entry.name, name: entry.name || entry.title || "Unnamed service", description: entry.description || entry.summary || "", announcement: entry.announcement || entry.description || "", price: Number(entry.price_sats || entry.price || 0), fiat: entry.fiat || "", available: entry.available !== false && entry.transport !== "whatsapp", unavailableReason: entry.transport === "whatsapp" ? "The WhatsApp rail is not connected in this release, so no payment can be taken." : "", npub: entry.npub,
       }));
     } catch (_error) { this.error = true; }
     finally { this.loading = false; }
