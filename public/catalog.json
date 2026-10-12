@@ -1,28 +1,29 @@
 {
   "entries": [
     {
-      "id": "example-cvm",
-      "name": "Example ContextVM",
-      "description": "A catalogue fixture service.",
-      "announcement": "This fixture demonstrates the static catalogue contract.",
-      "price_sats": 100,
-      "fiat": "€0.10",
-      "npub": "npub1example",
+      "id": "sms-cvm",
+      "name": "SMS",
+      "description": "Send an SMS to any US/Canada number, paid in Cashu sats.",
+      "announcement": "ContextVM SMS service. Send a text message to any +1 number. Flat price, paid per message with Cashu ecash escrow; undelivered sends are refunded. No account required.",
+      "price_sats": 2900,
+      "fiat": "€2.90",
+      "transport": "sms",
+      "npub": "npub1yfd2zvsq3lmz7n6ckjt77rm0a56s3d49n2xvpc0ct2tzx24c4wuqn4h6hf",
       "available": true
     },
     {
       "id": "whatsapp-cvm",
-      "name": "WhatsApp CVM",
-      "description": "WhatsApp delivery is not connected yet.",
-      "announcement": "Unavailable until the WhatsApp rail reports available=true.",
-      "price_sats": 250,
-      "fiat": "€0.25",
+      "name": "WhatsApp",
+      "description": "Send a WhatsApp message, paid in Cashu sats.",
+      "announcement": "ContextVM WhatsApp service. Delivery runs over the official Android client. This rail is not connected in this release, so no payment can be taken.",
+      "price_sats": 2500,
+      "fiat": "€2.50",
       "transport": "whatsapp",
-      "npub": "npub1example",
+      "npub": "npub1yfd2zvsq3lmz7n6ckjt77rm0a56s3d49n2xvpc0ct2tzx24c4wuqn4h6hf",
       "available": false
     }
   ],
-  "allowlist": ["npub1example"],
+  "allowlist": [],
   "class_tally": {},
-  "counts": {"entries": 2}
+  "counts": { "entries": 2 }
 }
