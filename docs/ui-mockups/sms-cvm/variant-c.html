@@ -1,0 +1,94 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>cashu.sms — Variant C: Chat-native</title>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;background:#eceae4;color:#1d2327;line-height:1.45;-webkit-font-smoothing:antialiased}
+.mono{font-family:ui-monospace,SFMono-Regular,Menlo,monospace}
+.screen{display:none;min-height:844px;display:none;flex-direction:column}.screen.on{display:flex}
+.top{display:flex;align-items:center;gap:12px;padding:14px 16px;background:#12805c;color:#fff}
+.avatar{width:36px;height:36px;border-radius:50%;background:#0e6b4c;display:flex;align-items:center;justify-content:center;font-weight:800;font-size:15px}
+.top .who b{display:block;font-size:15px}.top .who small{opacity:.8;font-size:11.5px}
+.top .bal{margin-left:auto;font-size:11.5px;opacity:.92}
+.thread{flex:1;padding:18px 14px;overflow:hidden;display:flex;flex-direction:column;gap:10px}
+.bub{max-width:82%;padding:10px 14px;border-radius:16px;font-size:14.5px}
+.them{background:#12805c;color:#fff;align-self:flex-start;border-bottom-left-radius:4px}
+.them small{display:block;opacity:.75;font-size:11px;margin-top:4px}
+.you{background:#fff;align-self:flex-end;border-bottom-right-radius:4px;box-shadow:0 1px 2px rgba(0,0,0,.06)}
+.you .num{color:#0e6b4c;font-weight:700}
+.you .cnt{font-size:11px;color:#98a0a6;margin-top:4px;text-align:right}
+.paychip{align-self:flex-end;max-width:82%;background:#fff;border:2px solid #f7931a;border-radius:16px;padding:12px 16px;box-shadow:0 2px 8px rgba(0,0,0,.08)}
+.paychip b{color:#b06500;font-size:19px}
+.paychip small{display:block;font-size:11.5px;color:#98a0a6;margin-top:2px}
+.paychip .hint{margin-top:8px;font-size:12px;color:#b06500;font-weight:700}
+.sent{align-self:flex-end;max-width:82%}
+.sent .b2{background:#dcf3c8;border-radius:16px;border-bottom-right-radius:4px;padding:10px 14px;font-size:14.5px}
+.sent .st2{text-align:right;font-size:11px;color:#98a0a6;margin-top:4px}
+.sent .st2 .ok{color:#12805c;font-weight:700}
+.caveat{align-self:center;max-width:88%;text-align:center;font-size:11px;color:#8a8578;margin-top:6px}
+.trustline{align-self:center;font-size:11.5px;color:#8a8578;margin-top:auto;padding-top:14px}
+.trustline b{color:#0e6b4c}
+.inputbar{display:flex;gap:8px;padding:10px 12px 20px;background:#eceae4;align-items:flex-end}
+.inputbar .fakefield{flex:1;background:#fff;border-radius:20px;padding:11px 15px;font-size:14px;color:#1d2327;box-shadow:0 1px 2px rgba(0,0,0,.06)}
+.inputbar .fakefield.dim{color:#98a0a6}
+.inputbar .send{width:44px;height:44px;border-radius:50%;background:#12805c;color:#fff;display:flex;align-items:center;justify-content:center;font-size:17px;border:none}
+.inputbar .send.pay{background:#f7931a}
+.statebar{display:flex;justify-content:center;gap:8px;padding:12px;font-size:11.5px;color:#98a0a6;align-items:center;background:#eceae4}
+.statebar .dot{width:8px;height:8px;border-radius:50%;background:#c9c4ba}
+.statebar .dot.on{background:#f7931a}.statebar .dot.ok{background:#12805c}
+.statebar b{color:#0e6b4c}
+.sronly{position:absolute;left:-9999px}
+</style></head><body>
+
+<!-- s=1 HOME = open chat with the service -->
+<section class="screen on" data-s="1">
+<div class="top"><div class="avatar">₿</div><div class="who"><b>cashu.sms</b><small>online · service</small></div><div class="bal mono">12 450 sats</div></div>
+<div class="thread">
+  <div class="bub them">Hi 👋 I send text messages for sats.<br><small>SMS to any US/Canada number · 2 900 sats flat</small></div>
+  <div class="bub them">No account, nothing stored. Pay per message.<br><small>WhatsApp rail isn't connected in this release — I take no payment for it.</small></div>
+  <div class="trustline">No account · No personal data · <b>Pay per message</b></div>
+</div>
+<div class="inputbar"><div class="fakefield dim">Who should receive it? (US/Canada number)</div><button class="send">↑</button></div>
+</section>
+
+<!-- s=2 COMPOSE -->
+<section class="screen" data-s="2">
+<div class="top"><div class="avatar">₿</div><div class="who"><b>cashu.sms</b><small>online · service</small></div><div class="bal mono">12 450 sats</div></div>
+<div class="thread">
+  <div class="bub them">Who should receive it?</div>
+  <div class="bub you mono"><span class="num">+1 555 010 2288</span><div class="cnt">number ✓</div></div>
+  <div class="bub them">What should it say? <small>1 segment = 160 chars included</small></div>
+  <div class="bub you">Landing in 20 min. Text me when you're outside.<div class="cnt">64 / 160</div></div>
+</div>
+<div class="inputbar"><div class="fakefield dim">Type your message…</div><button class="send">↑</button></div>
+</section>
+
+<!-- s=3 PAY -->
+<section class="screen" data-s="3">
+<div class="top"><div class="avatar">₿</div><div class="who"><b>cashu.sms</b><small>online · service</small></div><div class="bal mono">12 450 sats</div></div>
+<div class="thread">
+  <div class="bub you">Landing in 20 min. Text me when you're outside.<div class="cnt">64 / 160</div></div>
+  <div class="paychip mono"><b>2 900 sats</b><small>≈ €0.86 · display rate 1 € ≈ 3 340 sats</small><div class="hint">Tap to pay — held in escrow until sent</div></div>
+  <div class="bub them">Your sats go to escrow. I claim them only when I accept the send. <small>[ mockup QR placeholder — no real token in this file ]</small></div>
+</div>
+<div class="statebar"><b>Queued</b><div class="dot ok"></div><div class="dot on"></div>Pay<div class="dot"></div>Send</div>
+<div class="inputbar"><div class="fakefield dim">Waiting for payment…</div><button class="send pay">₿</button></div>
+</section>
+
+<!-- s=4 SENT -->
+<section class="screen" data-s="4">
+<div class="top"><div class="avatar">₿</div><div class="who"><b>cashu.sms</b><small>online · service</small></div><div class="bal mono">9 550 sats</div></div>
+<div class="thread">
+  <div class="sent"><div class="b2">Landing in 20 min. Text me when you're outside.</div><div class="st2 mono"><span class="ok">✓ sent</span> · sms_8f3k2 · 2 900 sats</div></div>
+  <div class="bub them">Sent to the SMS rail 📨<br><small>Escrow released to the service.</small></div>
+  <div class="caveat">The SMS rail gives no delivery receipts — you paid for the send, not the delivery.</div>
+  <div class="trustline">No account · No personal data · <b>Pay per message</b></div>
+</div>
+<div class="inputbar"><div class="fakefield dim">Send another message…</div><button class="send">↑</button></div>
+</section>
+
+<script>
+const qs=new URLSearchParams(location.search);
+const n=Math.min(4,Math.max(1,parseInt(qs.get('s')||'1',10)||1));
+document.querySelectorAll('.screen').forEach(el=>{el.classList.toggle('on',+el.dataset.s===n)});
+document.title='cashu.sms C — screen '+n;
+</script></body></html>

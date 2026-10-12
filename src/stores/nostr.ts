@@ -231,6 +231,12 @@ export const useNostrStore = defineStore("nostr", {
     },
     walletSeedGenerateKeyPair: async function () {
       const walletStore = useWalletStore();
+      // Fresh install: there is no seed yet. Bail out instead of deriving a
+      // keypair from empty bytes — callers run from page created() hooks and
+      // must not crash before onboarding.
+      if (!walletStore.hasSeed || walletStore.seed.length < 32) {
+        return;
+      }
       const sk = walletStore.seed.slice(0, 32);
       const walletPublicKeyHex = getPublicKey(sk); // `pk` is a hex string
       const walletPrivateKeyHex = bytesToHex(sk);

@@ -1,0 +1,132 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>cashu.sms — Variant A: Terminal</title>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;background:#0d0f12;color:#e8e6e1;line-height:1.45;-webkit-font-smoothing:antialiased}
+.mono{font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace}
+.screen{display:none;min-height:844px;padding:0 0 96px}.screen.on{display:block}
+.top{display:flex;justify-content:space-between;align-items:center;padding:18px 20px;border-bottom:1px solid #1c1f24}
+.brand{font-weight:700;letter-spacing:.02em}.brand span{color:#f7931a}
+.bal{font-size:13px;color:#9a958c}.bal b{color:#e8e6e1}
+.wrap{padding:20px}
+.hero{padding:26px 0 18px}
+.hero h1{font-size:30px;font-weight:800;letter-spacing:-.5px;line-height:1.15}
+.hero h1 em{color:#f7931a;font-style:normal}
+.hero .price{margin-top:10px;font-size:15px;color:#9a958c}
+.hero .price b{color:#f7931a;font-size:20px;margin-right:6px}
+.services{margin-top:22px;border:1px solid #1c1f24;border-radius:12px;overflow:hidden}
+.svc{display:flex;align-items:center;gap:14px;padding:16px 18px;border-bottom:1px solid #1c1f24}
+.svc:last-child{border-bottom:none}
+.svc .ic{width:38px;height:38px;border-radius:9px;background:#1a1d22;display:flex;align-items:center;justify-content:center;font-size:17px}
+.svc .t{flex:1}.svc .t b{display:block;font-size:15px}
+.svc .t small{color:#9a958c;font-size:12.5px}
+.svc .p{text-align:right}.svc .p b{display:block;font-size:15px;color:#f7931a}
+.svc .p small{color:#6d685f;font-size:11px}
+.svc.off{opacity:.45}.svc.off .p b{color:#9a958c}
+.trust{margin-top:18px;font-size:12.5px;color:#9a958c;text-align:center}
+.trust b{color:#c9c4ba;font-weight:600}
+details{margin-top:18px;border:1px dashed #2a2e35;border-radius:10px;padding:12px 14px}
+summary{cursor:pointer;font-size:12.5px;color:#9a958c;list-style:none}
+summary::before{content:"▸ "}.details[open] summary::before{content:"▾ "}
+details p{margin-top:10px;font-size:12.5px;color:#8b867d}
+.cta{position:fixed;left:0;right:0;bottom:0;padding:14px 20px 22px;background:linear-gradient(180deg,rgba(13,15,18,0),#0d0f12 40%)}
+.btn{display:block;width:100%;padding:16px;border:none;border-radius:12px;background:#f7931a;color:#141414;font-size:16px;font-weight:800;letter-spacing:.01em}
+.btn small{display:block;font-weight:600;font-size:12px;color:#3d2c14;margin-top:2px}
+label{display:block;font-size:11.5px;letter-spacing:.08em;text-transform:uppercase;color:#9a958c;margin:18px 0 7px}
+input,textarea{width:100%;background:#16181d;border:1px solid #262a31;border-radius:10px;color:#e8e6e1;font-size:16px;padding:13px 14px;outline:none}
+textarea{resize:none;min-height:150px;font-family:inherit}
+.count{font-size:11.5px;color:#6d685f;text-align:right;margin-top:6px}
+.summary{margin-top:20px;border:1px solid #1c1f24;border-radius:12px;padding:14px 16px;font-size:13px}
+.summary .row{display:flex;justify-content:space-between;padding:5px 0;color:#9a958c}
+.summary .row b{color:#e8e6e1}.summary .row.pri b{color:#f7931a;font-size:17px}
+.paybar{position:fixed;left:0;right:0;bottom:0;background:#0d0f12;border-top:1px solid #1c1f24;padding:12px 20px 22px;display:flex;gap:10px;align-items:center}
+.paybar .amt{flex:1}.paybar .amt b{font-size:17px;color:#f7931a;display:block}
+.paybar .amt small{color:#6d685f;font-size:11px}
+.paybar .btn{width:auto;padding:14px 22px;margin:0}
+.state{display:flex;gap:0;margin:22px 0;align-items:center}
+.st{flex:1;text-align:center}.st .dot{width:26px;height:26px;border-radius:50%;margin:0 auto 6px;border:2px solid #3a3e46;display:flex;align-items:center;justify-content:center;font-size:12px;color:#6d685f}
+.st.act .dot{background:#f7931a;border-color:#f7931a;color:#141414;font-weight:800}
+.st.done .dot{background:#1d3a2a;border-color:#2f7d4f;color:#5fd18b}
+.st small{font-size:10.5px;color:#9a958c;letter-spacing:.04em}
+.st.act small{color:#f7931a}
+.conn{flex:0 0 18px;height:2px;background:#3a3e46;margin-top:-14px}
+.conn.on{background:#f7931a}
+.qr{width:170px;height:170px;margin:8px auto;border:1px dashed #3a3e46;border-radius:12px;display:flex;align-items:center;justify-content:center;text-align:center;font-size:11px;color:#6d685f;padding:14px}
+.escrow{margin:14px 0;font-size:12.5px;color:#9a958c;text-align:center}
+.escrow b{color:#c9c4ba}
+.receipt{margin-top:8px;font-size:13px}
+.receipt .line{display:flex;gap:10px;padding:9px 0;border-bottom:1px solid #1a1d22}
+.receipt .line .k{color:#6d685f;width:110px;font-size:12px}
+.receipt .ok{color:#5fd18b}
+.warn{margin-top:20px;border-left:3px solid #f7931a;padding:10px 14px;background:#16130d;border-radius:0 10px 10px 0;font-size:12.5px;color:#c9c4ba}
+</style></head><body>
+
+<!-- s=1 HOME -->
+<section class="screen" data-s="1"><div class="top"><div class="brand">cashu<span>.sms</span></div><div class="bal mono">wallet <b>12 450 sats</b></div></div>
+<div class="wrap">
+  <div class="hero"><h1>Send a text.<br>Pay in <em>sats</em>.</h1>
+    <div class="price mono"><b>2 900 sats</b> per message · flat</div></div>
+  <div class="services">
+    <div class="svc"><div class="ic">✉️</div><div class="t"><b>SMS</b><small>Any US / Canada number</small></div><div class="p mono"><b>2 900</b><small>sats</small></div></div>
+    <div class="svc off"><div class="ic">💬</div><div class="t"><b>WhatsApp</b><small>Not connected in this release</small></div><div class="p mono"><b>—</b><small>no payment</small></div></div>
+  </div>
+  <div class="trust">No account · No personal data · <b>Pay per message</b></div>
+  <details><summary>Details</summary><p>Runs on a ContextVM service over Nostr. Your sats go to escrow; the service claims them only when it accepts the send. US/Canada numbers only. The SMS rail provides no delivery receipts — you pay for the send, not the delivery.</p></details>
+</div>
+<div class="cta"><button class="btn">Write message<small>2 900 sats · 1 segment (160 chars) included</small></button></div>
+</section>
+
+<!-- s=2 COMPOSE -->
+<section class="screen" data-s="2"><div class="top"><div class="brand">cashu<span>.sms</span></div><div class="bal mono">wallet <b>12 450 sats</b></div></div>
+<div class="wrap">
+  <label>To</label>
+  <input class="mono" value="+1 555 010 2288" inputmode="tel">
+  <label>Message</label>
+  <textarea>Landing in 20 min. Text me when you're outside.</textarea>
+  <div class="count mono">64 / 160 chars · 1 segment included</div>
+  <div class="summary mono">
+    <div class="row"><span>SMS · flat</span><b>1 segment</b></div>
+    <div class="row pri"><span>Price</span><b>2 900 sats</b></div>
+    <div class="row"><span>Display rate</span><span>1 € ≈ 3 340 sats</span></div>
+  </div>
+</div>
+<div class="paybar"><div class="amt mono"><b>2 900 sats</b><small>≈ €0.86</small></div><button class="btn">Pay &amp; send</button></div>
+</section>
+
+<!-- s=3 PAY -->
+<section class="screen" data-s="3"><div class="top"><div class="brand">cashu<span>.sms</span></div><div class="bal mono">wallet <b>12 450 sats</b></div></div>
+<div class="wrap">
+  <div class="state">
+    <div class="st done"><div class="dot">✓</div><small>QUEUED</small></div><div class="conn on"></div>
+    <div class="st act"><div class="dot">2</div><small>PAY</small></div><div class="conn"></div>
+    <div class="st"><div class="dot">3</div><small>SEND</small></div>
+  </div>
+  <div class="qr mono">[ mockup QR placeholder — no real token in this file ]</div>
+  <div class="escrow">Held in <b>escrow</b> until your message is sent.<br>The service claims payment only on accept.</div>
+  <div class="summary mono"><div class="row pri"><span>Total</span><b>2 900 sats</b></div><div class="row"><span>≈ fiat</span><span>€0.86 · display rate</span></div></div>
+</div>
+<div class="cta"><button class="btn">Pay from wallet<small>12 450 sats available</small></button></div>
+</section>
+
+<!-- s=4 SENT -->
+<section class="screen" data-s="4"><div class="top"><div class="brand">cashu<span>.sms</span></div><div class="bal mono">wallet <b>9 550 sats</b></div></div>
+<div class="wrap">
+  <div class="hero"><h1 style="font-size:24px">Sent <em>✓</em></h1></div>
+  <div class="receipt mono">
+    <div class="line"><span class="k">status</span><span class="ok">sent to SMS rail</span></div>
+    <div class="line"><span class="k">to</span><span>+1 555 010 2288</span></div>
+    <div class="line"><span class="k">id</span><span>sms_8f3k2</span></div>
+    <div class="line"><span class="k">paid</span><span>2 900 sats · escrow released</span></div>
+  </div>
+  <div class="warn">The SMS rail gives no delivery receipts — you paid for the send, not the delivery.</div>
+  <div class="trust" style="margin-top:26px">No account · No personal data · <b>Pay per message</b></div>
+</div>
+<div class="cta"><button class="btn" style="background:#1a1d22;color:#e8e6e1">Send another</button></div>
+</section>
+
+<script>
+const qs=new URLSearchParams(location.search);
+const n=Math.min(4,Math.max(1,parseInt(qs.get('s')||'1',10)||1));
+document.querySelectorAll('.screen').forEach(el=>{el.classList.toggle('on',+el.dataset.s===n)});
+document.title='cashu.sms A — screen '+n;
+</script></body></html>

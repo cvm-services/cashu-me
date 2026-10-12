@@ -23,7 +23,7 @@
           :key="service.id"
           class="svc-card"
           :class="{ 'svc-unavailable': !service.available }"
-          :data-testid="`service-card-${service.id}`"
+          :data-testid="'service-card-' + service.id"
           role="button"
           :tabindex="service.available ? 0 : -1"
           :aria-disabled="!service.available"
@@ -32,7 +32,7 @@
         >
           <div
             class="svc-head"
-            :data-testid="`service-row-${service.id}`"
+            :data-testid="'service-row-' + service.id"
           >
             <div class="svc-ic">{{ service.icon }}</div>
             <div>
@@ -43,11 +43,11 @@
 
           <!-- sats first, fiat second and smaller -->
           <div class="svc-price">
-            <span class="sats" :data-testid="`price-sats`">{{ formatSats(service.price) }}</span>
-            <span class="fiat" :data-testid="`price-fiat`">{{ service.fiat }}</span>
+            <span class="sats" data-testid="price-sats">{{ formatSats(service.price) }}</span>
+            <span class="fiat" data-testid="price-fiat">{{ service.fiat }}</span>
           </div>
 
-          <div v-if="!service.available" class="svc-why" :data-testid="`unavailable-reason`">
+          <div v-if="!service.available" class="svc-why" data-testid="unavailable-reason">
             {{ service.unavailableReason }}
           </div>
           <div v-else class="svc-go">{{ $t("services.writeMessage") }} →</div>
