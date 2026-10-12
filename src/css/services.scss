@@ -364,6 +364,56 @@ body.body--light .services-page,
   font-weight: 800;
 }
 
+.svc-dialog .svc-cta:disabled {
+  opacity: 0.55;
+  cursor: default;
+}
+
+/* Honest result surface: accepted vs not, never "delivered". */
+.svc-dialog .svc-result {
+  margin-top: 12px;
+  padding: 10px 13px;
+  border-radius: 12px;
+  font-size: 13.5px;
+  font-weight: 700;
+  border: 1px solid var(--svc-border-strong);
+}
+
+.svc-dialog .svc-result-ok {
+  background: var(--svc-accent-soft);
+  border-color: var(--svc-accent);
+  color: var(--svc-accent);
+}
+
+.svc-dialog .svc-result-bad {
+  background: var(--svc-warn-bg);
+  border-color: var(--svc-warn-border);
+  color: var(--svc-warn-fg);
+}
+
+.svc-dialog .svc-kv {
+  display: flex;
+  gap: 8px;
+  align-items: baseline;
+  margin-top: 8px;
+  font-size: 12.5px;
+  color: var(--svc-fg-dim);
+  word-break: break-all;
+}
+
+.svc-dialog .svc-kv b {
+  color: var(--svc-fg);
+  flex: 0 0 auto;
+}
+
+.svc-dialog .svc-err-reason {
+  margin-top: 4px;
+  font-family: var(--svc-mono);
+  font-size: 11px;
+  opacity: 0.85;
+  word-break: break-word;
+}
+
 .svc-dialog .svc-ghost {
   width: 100%;
   padding: 13px;

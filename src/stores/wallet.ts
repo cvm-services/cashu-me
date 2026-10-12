@@ -797,6 +797,42 @@ export const useWalletStore = defineStore("wallet", {
         uIStore.unlockMutex();
       }
     },
+    /**
+     * Mint a Cashu token worth `amount` sats for an external payer (the CVM
+     * pay step). Selects proofs from the active mint, swaps so the encoded
+     * proofs sum to `amount` PLUS the mint's own input fee (includeFees), then
+     * serialises them to a `cashuA…`/`cashuB…` bearer string.
+     *
+     * The proofs are removed from the store (`invalidate`): the token leaves
+     * the wallet the moment it is encoded, so a failed remote send must not
+     * leave spendable-looking proofs behind. Ownership of a failed send is
+     * reclaimed by the service's refund token, not by re-spending here.
+     *
+     * The trailing fee headroom matters: the receiving service deducts the
+     * mint's input fee from the token before comparing against its price, so a
+     * token of exactly `amount` would come up short.
+     */
+    mintPaymentToken: async function (
+      amount: number,
+      mutexPriority: MutexPriority = "normal"
+    ): Promise<{ token: string; sats: number }> {
+      const proofsStore = useProofsStore();
+      const proofs = await proofsStore.getProofs();
+      const wallet = await this.activeWallet(true);
+      const { sendProofs } = await this.send(
+        proofs,
+        wallet,
+        amount,
+        true, // invalidate — the token is leaving the wallet
+        true, // includeFees — the receiver deducts the mint's input fee
+        mutexPriority
+      );
+      if (!sendProofs.length) {
+        throw new Error("could not split proofs.");
+      }
+      const token = proofsStore.serializeProofs(sendProofs);
+      return { token, sats: proofsStore.sumProofs(sendProofs) };
+    },
     redeem: async function () {
       /*
       Receives a token that is prepared in the receiveToken – it is not yet in the history
