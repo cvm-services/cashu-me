@@ -59,7 +59,10 @@ const DEFAULT_TIMEOUT_MS = 45_000;
 const REPLY_POLL_MS = 400;
 
 /** Decode one gift wrap addressed to us and return the inner kind-25910 event. */
-export function unwrapGiftWrap(wrap: Event, recipientSecret: string): Event | null {
+export function unwrapGiftWrap(
+  wrap: Event,
+  recipientSecret: string
+): Event | null {
   try {
     // wrap.content is NIP-44 to us, from the wrap's (throwaway) pubkey
     const sealJson = nip44.v2.decrypt(
@@ -163,7 +166,9 @@ export class CvmClient {
     args: Record<string, unknown> = {},
     method: "tools/call" | "initialize" = "tools/call"
   ): Promise<JsonRpcReply> {
-    const id = `${tool}-${Date.now()}-${Math.random().toString(36).slice(2, 8)}`;
+    const id = `${tool}-${Date.now()}-${Math.random()
+      .toString(36)
+      .slice(2, 8)}`;
     const params =
       method === "tools/call" ? { name: tool, arguments: args } : args;
     const request = { jsonrpc: "2.0", id, method, params };
@@ -178,7 +183,8 @@ export class CvmClient {
           if (!rumor) return;
           try {
             const reply = JSON.parse(rumor.content) as JsonRpcReply;
-            if (reply && reply.id !== undefined) replies.set(String(reply.id), reply);
+            if (reply && reply.id !== undefined)
+              replies.set(String(reply.id), reply);
           } catch {
             /* ignore undecodable payloads */
           }

@@ -3,3 +3,10 @@ src-capacitor
 src-cordova
 android
 ios
+.quasar
+node_modules
+playwright-report
+test-results
+coverage
+np-export
+REPORT-pwa-build.md

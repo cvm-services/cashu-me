@@ -24,7 +24,14 @@
         data-testid="theme-toggle"
         @click="onToggleTheme"
       />
-      <q-btn flat dense icon="miscellaneous_services" color="primary" :label="$t('services.title')" to="/services" />
+      <q-btn
+        flat
+        dense
+        icon="miscellaneous_services"
+        color="primary"
+        :label="$t('services.title')"
+        to="/services"
+      />
       <transition
         appear
         enter-active-class="animated wobble"
@@ -104,7 +111,9 @@ export default defineComponent({
     applyStoredTheme();
     // Dark.isActive is not a Vue ref, so mirror it locally to make the icon reactive.
     const isDark = ref(Dark.isActive);
-    const themeIcon = computed(() => (isDark.value ? "light_mode" : "dark_mode"));
+    const themeIcon = computed(() =>
+      isDark.value ? "light_mode" : "dark_mode"
+    );
     const onToggleTheme = () => {
       isDark.value = toggleTheme();
     };

@@ -297,7 +297,11 @@ export const useWalletStore = defineStore("wallet", {
      * touching `seed`, otherwise a fresh install throws "Invalid mnemonic".
      */
     hasSeed(): boolean {
-      return typeof this.mnemonic === "string" && this.mnemonic.trim().length > 0 && this.mnemonic.trim().split(/\s+/).length >= 12;
+      return (
+        typeof this.mnemonic === "string" &&
+        this.mnemonic.trim().length > 0 &&
+        this.mnemonic.trim().split(/\s+/).length >= 12
+      );
     },
     /**
      * BIP-39 seed bytes, or an empty array before onboarding.

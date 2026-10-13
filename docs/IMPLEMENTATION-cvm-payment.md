@@ -12,12 +12,12 @@ produced one.
 
 ### Where the pieces already were
 
-| Need | Existing code |
-| --- | --- |
+| Need                                                                                  | Existing code                                                                               |
+| ------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------- |
 | Split a spendable amount out of the wallet's proofs, swapping with the mint if needed | `wallet.send(proofs, wallet, amount, invalidate, includeFees)` — `src/stores/wallet.ts:708` |
-| Serialise proofs to the bearer string | `proofs.serializeProofs(sendProofs)` — `src/stores/proofs.ts:159` |
-| Sum for the honest `sats` figure | `proofs.sumProofs(...)` — `src/stores/proofs.ts:79` |
-| Active mint wallet handle | `wallet.activeWallet(true)` — `src/stores/wallet.ts` |
+| Serialise proofs to the bearer string                                                 | `proofs.serializeProofs(sendProofs)` — `src/stores/proofs.ts:159`                           |
+| Sum for the honest `sats` figure                                                      | `proofs.sumProofs(...)` — `src/stores/proofs.ts:79`                                         |
+| Active mint wallet handle                                                             | `wallet.activeWallet(true)` — `src/stores/wallet.ts`                                        |
 
 ### What was added — `wallet.mintPaymentToken(amount)`
 
@@ -44,7 +44,7 @@ mintPaymentToken: async function (amount, mutexPriority = "normal") {
 
 Three deliberate choices:
 
-1. **`includeFees = true`.** The receiving CVM counts *spendable value* after the
+1. **`includeFees = true`.** The receiving CVM counts _spendable value_ after the
    mint's input fee. A token summing to exactly 2900 sats would arrive worth
    2900 − fee and be refused. `send(..., includeFees=true)` mints a swap whose
    encoded proofs cover the price **plus** the input fee, so the token the
@@ -63,7 +63,7 @@ proofs (or removes them when `invalidate`), under the UI mutex.
 ## 2. The payment orchestration — `src/js/cvmPayment.ts` (new)
 
 `src/js/cvm.ts` is the transport (gift-wrapped MCP JSON-RPC). The new module is
-the *payment* half, kept out of the Quasar-heavy component so it can be tested
+the _payment_ half, kept out of the Quasar-heavy component so it can be tested
 directly (the page mounts empty in this repo's harness).
 
 `payForSms(input)` runs the steps in this exact order, **money-moving step last**:
@@ -119,12 +119,12 @@ Kept the Options API, `mixins: [windowMixin]`, `data-testid` names, and the
   - **no mint / wrong mint / insufficient balance / `payment_required` /
     unreachable** — each maps to its own i18n key via `payForSms`, shown in
     `data-testid="pay-error"` with the machine reason.
-  - **success** — `data-testid="send-result"` states *Accepted by the rail*, the
+  - **success** — `data-testid="send-result"` states _Accepted by the rail_, the
     send id and rail status are shown, and the no-receipts caveat is always
     present.
   - The button is `:disabled="paying"` so a double-tap cannot mint twice.
   - The transport is a real `new CvmClient({ relays: SERVICE_RELAYS,
-    serverPubkey: npubToHex(...), secretKey })`, closed in `finally`.
+serverPubkey: npubToHex(...), secretKey })`, closed in `finally`.
 - An accepted send is recorded in wallet history through
   `wallet.addPaymentHistory(...)` (not a raw array push), inside a try/catch: a
   history write must never turn a real send into a visible failure.

@@ -74,7 +74,8 @@ module.exports = configure(function (/* ctx */) {
       // deep link (e.g. /services) reaches the app instead of a 404. Hash mode
       // makes every route resolve to the one index.html that always exists.
       // Set VUE_ROUTER_MODE=history for deployments behind a rewriting server.
-      vueRouterMode: process.env.VUE_ROUTER_MODE === "history" ? "history" : "hash",
+      vueRouterMode:
+        process.env.VUE_ROUTER_MODE === "history" ? "history" : "hash",
       // vueRouterBase,
       // vueDevtools,
       // vueOptionsAPI: false,
