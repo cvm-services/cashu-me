@@ -1,6 +1,7 @@
 # Services CVM payment integration — plan
 
 ## Goal
+
 Make the SMS service actually work end to end in the PWA: user pays, an SMS is
 sent, the operator can test it manually on their phone.
 
@@ -9,6 +10,7 @@ which is why paying produced a mock invoice and no SMS. Nothing else in the app
 can pay the CVM.
 
 ## Protocol (from /home/c03rad0r/repos/nosms/docs/cvm/llms.txt + reference client)
+
 - Transport: MCP JSON-RPC over Nostr. Build a **kind 25910 rumor**, JSON-RPC body,
   tag `["p", <server pubkey>]`, then **gift-wrap (NIP-59)** to the server pubkey.
 - Correlation: poll received gift-wraps for a reply whose JSON-RPC `id` matches.
@@ -22,6 +24,7 @@ can pay the CVM.
   a best_effort miss is not (no delivery receipts on this rail).
 
 ## Phases
+
 0. Probe — confirm the live CVM's real unpaid response, token field name, and the
    lightning/settlement_receipt shape. Evidence, not docs.
 1. Transport — `src/js/cvm.ts`: gift-wrapped kind-25910 request/response over the
@@ -33,6 +36,7 @@ can pay the CVM.
 5. Tests + deploy to the orangesync subdomain; gateway restart; surface for manual test.
 
 ## Constraints
+
 - Honest UI: no delivery guarantee on this rail; no delivery receipts.
 - The rail's `cap:tool:sms.send:2900:sats` is authoritative, not the catalog copy.
 - Never fake a success. An unpushed, unverified claim is not a result.

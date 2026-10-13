@@ -16,7 +16,9 @@ vi.mock("vue-i18n", async (importOriginal) => ({
   ...(await importOriginal<typeof import("vue-i18n")>()),
   useI18n: () => ({ t: (key: string) => key }),
 }));
-vi.mock("src/stores/nostrMintBackup", () => ({ useNostrMintBackupStore: () => ({}) }));
+vi.mock("src/stores/nostrMintBackup", () => ({
+  useNostrMintBackupStore: () => ({}),
+}));
 vi.mock("src/js/notify", () => ({
   notifySuccess: () => undefined,
   notifyError: () => undefined,
@@ -27,7 +29,11 @@ vi.mock("src/js/notify", () => ({
 let walletStore: any;
 
 beforeAll(async () => {
-  (globalThis as any).windowMixin = { computed: {}, methods: {}, data: () => ({}) };
+  (globalThis as any).windowMixin = {
+    computed: {},
+    methods: {},
+    data: () => ({}),
+  };
   const pinia = await import("pinia");
   pinia.setActivePinia(pinia.createPinia());
   const { useWalletStore } = await import("src/stores/wallet");
@@ -60,7 +66,9 @@ describe("welcome redirect with the hash router", () => {
   it("does not append the current hash to a router push", async () => {
     const fs = await import("node:fs");
     const source = fs.readFileSync("src/pages/WalletPage.vue", "utf8");
-    expect(source).not.toMatch(/this\.\$router\.push\(\s*["'`]\/welcome["'`]\s*\+\s*currentQuery\s*\+\s*currentHash/);
+    expect(source).not.toMatch(
+      /this\.\$router\.push\(\s*["'`]\/welcome["'`]\s*\+\s*currentQuery\s*\+\s*currentHash/
+    );
     expect(source).not.toMatch(/const currentHash = window\.location\.hash/);
   });
 });

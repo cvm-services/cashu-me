@@ -10,11 +10,16 @@ import { Dark } from "quasar";
 let theme: any;
 
 beforeAll(async () => {
-  (globalThis as any).windowMixin = { computed: {}, methods: {}, data: () => ({}) };
+  (globalThis as any).windowMixin = {
+    computed: {},
+    methods: {},
+    data: () => ({}),
+  };
   theme = await import("src/js/theme");
 });
 
-const read = async (path: string) => (await import("node:fs")).readFileSync(path, "utf8");
+const read = async (path: string) =>
+  (await import("node:fs")).readFileSync(path, "utf8");
 
 describe("theme module contract", () => {
   beforeEach(() => localStorage.clear());

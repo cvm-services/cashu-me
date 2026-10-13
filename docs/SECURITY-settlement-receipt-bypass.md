@@ -7,6 +7,7 @@ personal JMP line, at the operator's expense.
 successful probe would send a real SMS to a real handset.
 
 ## Evidence (live server, the copy actually running)
+
 `/home/c03rad0r/repos/nosms/app/cvm_tools.py` — the running process's cwd is
 `/home/c03rad0r/repos/nosms` (pid 2156635), so this is the authoritative code.
 
@@ -44,10 +45,11 @@ can pass ANY non-empty string (or the JSON boolean `true`, which is also
 non-falsy) as `settlement_receipt` and skip payment entirely.
 
 The same hole exists on the `jmp.credentials` path (line 579), though that one
-is gated by the operator allow-list *before* payment (line 573), so it is only
+is gated by the operator allow-list _before_ payment (line 573), so it is only
 reachable by allow-listed callers — lower impact.
 
 ## Impact
+
 - Anyone who knows the server npub can send SMS free of charge.
 - Bounded by the pacer to `daily_cap = 20`/UTC-day with a 60-300 s jittered gap
   (`app/transports/pacing.py:83-85`) — so up to 20 messages/day.
@@ -59,6 +61,7 @@ reachable by allow-listed callers — lower impact.
   untraceable SMS.
 
 ## Options for a fix (no code written yet — needs the operator's call)
+
 1. **Validation (correct, more work):** define what a CEP-8 settlement receipt
    actually is (a signed attestation? a preimage against a known payment hash?),
    store settlements server-side, and verify on receipt. Reject anything that
@@ -75,18 +78,19 @@ and validated. Claiming a second rail that is not verified is the same class of
 overclaim as the Services-tab "done" that turned out not to be done.
 
 ## Recommendation
+
 - Fix the SERVER (option 2 or 3 now, option 1 when CEP-8 settlements are real).
 - The PWA must use the **`cashu_token`** path — the one that genuinely holds value.
 - Do not ship a UI that offers "pay a lightning invoice" until `settlement_receipt`
   verifies, or the UI would be lying about what it collects.
 
 ## Also found (blocks the end-to-end test)
+
 `NOSMS_MINT_URL=https://testnut.cashu.space` on the live unit
 (`~/.config/systemd/user/nosms-cvm-server.service:18`) — a TEST mint. A token
 from a real wallet (e.g. minibits) is refused with `token_wrong_mint`
 (cvm_tools.py:235-239). So a genuine end-to-end paid send needs the service
 repointed at a real mint, and a funded token for that mint.
-
 
 ## RESOLVED 2026-10-12 (commit 169a935, deployed)
 

@@ -68,7 +68,8 @@ export default {
     trustNoAccount: "No account",
     trustNoData: "No personal data",
     trustPayPerMessage: "Pay per message",
-    detailsBody: "Runs as a ContextVM service over Nostr. Your sats are held in escrow and claimed only when the service accepts the send. US and Canada numbers only. The SMS rail provides no delivery receipts — you pay for the send, not the delivery.",
+    detailsBody:
+      "Runs as a ContextVM service over Nostr. Your sats are held in escrow and claimed only when the service accepts the send. US and Canada numbers only. The SMS rail provides no delivery receipts — you pay for the send, not the delivery.",
     stepCompose: "Compose",
     stepPay: "Pay",
     stepSend: "Send",
@@ -78,26 +79,33 @@ export default {
     qrPlaceholder: "mockup invoice placeholder - no real token in this file",
     escrowHeld: "Held in escrow until your message is sent.",
     escrowClaimed: "The service claims payment only on accept.",
-    noReceipts: "The SMS rail gives no delivery receipts - you paid for the send, not the delivery.",
+    noReceipts:
+      "The SMS rail gives no delivery receipts - you paid for the send, not the delivery.",
     continueToPayment: "Continue to payment",
     payFromWallet: "Pay from wallet",
     paying: "Paying…",
     sendAnother: "Send another message",
-    resultAccepted: "Accepted by the rail. The message was sent to the carrier — not confirmed delivered.",
+    resultAccepted:
+      "Accepted by the rail. The message was sent to the carrier — not confirmed delivered.",
     resultNotAccepted: "Not sent. The rail did not accept this message.",
     resultId: "Send id",
     resultStatus: "Rail status",
     resultRefunded: "Refunded to your wallet",
     payErrors: {
-      noWallet: "Your wallet has no seed yet, so it cannot pay. Set up your wallet first.",
+      noWallet:
+        "Your wallet has no seed yet, so it cannot pay. Set up your wallet first.",
       noMint: "No mint is connected, so there is no ecash to pay with.",
-      wrongMint: "This service escrows at a specific mint. Add that mint to pay for this service.",
-      insufficientFunds: "Not enough balance to cover the price plus the mint fee.",
+      wrongMint:
+        "This service escrows at a specific mint. Add that mint to pay for this service.",
+      insufficientFunds:
+        "Not enough balance to cover the price plus the mint fee.",
       refused: "The service refused the payment. No message was sent.",
       spent: "The token was already spent or is in an unknown state.",
       badNumber: "That number is not one the rail can serve (US / Canada, +1).",
-      paced: "The rail is pacing sends right now. Nothing was charged — try again shortly.",
-      railDown: "The rail is unavailable. Nothing was sent and the postage is refunded.",
+      paced:
+        "The rail is pacing sends right now. Nothing was charged — try again shortly.",
+      railDown:
+        "The rail is unavailable. Nothing was sent and the postage is refunded.",
       unreachable: "No reply from the service. Nothing was sent.",
       generic: "The payment could not be completed. No message was sent.",
     },
@@ -109,13 +117,16 @@ export default {
     paymentNotice: "Payment uses your Cashu wallet.",
     notWired: "Payment is not wired end-to-end in this release.",
     providerTitle: "Are you a service provider?",
-    providerDescription: "Request catalogue access without changing the curator-managed allow-list.",
+    providerDescription:
+      "Request catalogue access without changing the curator-managed allow-list.",
     requestAccess: "Request access",
     requestAccessTitle: "Request catalogue access",
-    requestAccessDescription: "Your request is attributable to the provider npub and never grants access automatically.",
+    requestAccessDescription:
+      "Your request is attributable to the provider npub and never grants access automatically.",
     providerNpub: "Provider npub",
     accessState: "Your current state",
-    requestSignedNotice: "The signed request is prepared locally; registry curators must list you in git.",
+    requestSignedNotice:
+      "The signed request is prepared locally; registry curators must list you in git.",
     submitRequest: "Submit request",
     requestSaved: "Request recorded locally as requested.",
   },

@@ -20,7 +20,9 @@ import {
 } from "src/js/cvm";
 
 const hex = (b: Uint8Array) =>
-  Array.from(b).map((x) => x.toString(16).padStart(2, "0")).join("");
+  Array.from(b)
+    .map((x) => x.toString(16).padStart(2, "0"))
+    .join("");
 
 describe("CVM gift wrap (NIP-59)", () => {
   it("round-trips a JSON-RPC request to the server and back", () => {
@@ -29,8 +31,12 @@ describe("CVM gift wrap (NIP-59)", () => {
     const serverPk = getPublicKey(serverSk as unknown as Uint8Array);
     void clientSk;
 
-    const request = { jsonrpc: "2.0", id: "sms.pricing-1", method: "tools/call",
-      params: { name: "sms.pricing", arguments: {} } };
+    const request = {
+      jsonrpc: "2.0",
+      id: "sms.pricing-1",
+      method: "tools/call",
+      params: { name: "sms.pricing", arguments: {} },
+    };
 
     // client -> server
     const wrap = giftWrap(JSON.stringify(request), serverPk, clientSk);
@@ -79,7 +85,9 @@ describe("MCP envelope parsing", () => {
     const reply = {
       jsonrpc: "2.0",
       id: "1",
-      result: { content: [{ type: "text", text: JSON.stringify({ price_sats: 2900 }) }] },
+      result: {
+        content: [{ type: "text", text: JSON.stringify({ price_sats: 2900 }) }],
+      },
     };
     expect(replyText(reply)).toContain("2900");
     const parsed = parseToolPayload<{ price_sats: number }>(reply);

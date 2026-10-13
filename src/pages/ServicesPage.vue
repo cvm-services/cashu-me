@@ -3,10 +3,15 @@
     <div class="svc-shell">
       <!-- Hero: the two shipped designs share this block, the theme flips its voice -->
       <div class="svc-hero">
-        <h1>{{ $t("services.heroTitle") }}<br /><em>{{ $t("services.heroAccent") }}</em></h1>
+        <h1>
+          {{ $t("services.heroTitle") }}<br /><em>{{
+            $t("services.heroAccent")
+          }}</em>
+        </h1>
         <p>{{ $t("services.heroSubtitle") }}</p>
         <div class="svc-rate">
-          <b>{{ formatSats(2900) }}</b>{{ $t("services.rateSuffix") }}
+          <b>{{ formatSats(2900) }}</b
+          >{{ $t("services.rateSuffix") }}
         </div>
       </div>
 
@@ -14,7 +19,12 @@
         {{ $t("services.catalogUnavailable") }}
       </q-banner>
 
-      <q-spinner v-if="loading" color="primary" size="2em" class="q-my-xl block q-mx-auto" />
+      <q-spinner
+        v-if="loading"
+        color="primary"
+        size="2em"
+        class="q-my-xl block q-mx-auto"
+      />
 
       <div v-else-if="filteredServices.length" class="svc-list">
         <!-- A list row IS the tap target: no per-row button to mis-tap. -->
@@ -30,10 +40,7 @@
           @click="service.available && openService(service)"
           @keydown.enter="service.available && openService(service)"
         >
-          <div
-            class="svc-head"
-            :data-testid="'service-row-' + service.id"
-          >
+          <div class="svc-head" :data-testid="'service-row-' + service.id">
             <div class="svc-ic">{{ service.icon }}</div>
             <div>
               <div class="svc-name">{{ service.name }}</div>
@@ -43,18 +50,28 @@
 
           <!-- sats first, fiat second and smaller -->
           <div class="svc-price">
-            <span class="sats" data-testid="price-sats">{{ formatSats(service.price) }}</span>
-            <span class="fiat" data-testid="price-fiat">{{ service.fiat }}</span>
+            <span class="sats" data-testid="price-sats">{{
+              formatSats(service.price)
+            }}</span>
+            <span class="fiat" data-testid="price-fiat">{{
+              service.fiat
+            }}</span>
           </div>
 
-          <div v-if="!service.available" class="svc-why" data-testid="unavailable-reason">
+          <div
+            v-if="!service.available"
+            class="svc-why"
+            data-testid="unavailable-reason"
+          >
             {{ service.unavailableReason }}
           </div>
           <div v-else class="svc-go">{{ $t("services.writeMessage") }} →</div>
         </div>
       </div>
 
-      <div v-else class="svc-card svc-unavailable q-pa-lg text-center">{{ $t("services.empty") }}</div>
+      <div v-else class="svc-card svc-unavailable q-pa-lg text-center">
+        {{ $t("services.empty") }}
+      </div>
 
       <!-- Trust chip: cheap, high value, stays out of the way -->
       <div class="svc-trust">
@@ -74,22 +91,47 @@
         <q-card-section data-testid="confirm-dialog">
           <div class="svc-dialog-title">{{ selected && selected.name }}</div>
           <div class="svc-amount">
-            <span class="sats" data-testid="confirm-amount">{{ formatSats(payAmount) }}</span>
+            <span class="sats" data-testid="confirm-amount">{{
+              formatSats(payAmount)
+            }}</span>
             <span class="fiat">{{ selected && selected.fiat }}</span>
           </div>
 
           <div class="svc-steps">
-            <span class="step" :class="{ on: step === 'compose' }">{{ $t("services.stepCompose") }}</span>
+            <span class="step" :class="{ on: step === 'compose' }">{{
+              $t("services.stepCompose")
+            }}</span>
             <span class="sep" />
-            <span class="step" :class="{ on: step === 'pay' }">{{ $t("services.stepPay") }}</span>
+            <span class="step" :class="{ on: step === 'pay' }">{{
+              $t("services.stepPay")
+            }}</span>
             <span class="sep" />
-            <span class="step" :class="{ on: step === 'sent' }">{{ $t("services.stepSend") }}</span>
+            <span class="step" :class="{ on: step === 'sent' }">{{
+              $t("services.stepSend")
+            }}</span>
           </div>
 
           <div v-if="step === 'compose'" data-testid="compose-step">
-            <q-input v-model="recipient" outlined dense :label="$t('services.toNumber')" inputmode="tel" class="q-mt-md" />
-            <q-input v-model="message" outlined dense type="textarea" :label="$t('services.messageLabel')" class="q-mt-sm" />
-            <div class="text-caption text-right q-mt-xs" style="color: var(--svc-fg-faint)">
+            <q-input
+              v-model="recipient"
+              outlined
+              dense
+              :label="$t('services.toNumber')"
+              inputmode="tel"
+              class="q-mt-md"
+            />
+            <q-input
+              v-model="message"
+              outlined
+              dense
+              type="textarea"
+              :label="$t('services.messageLabel')"
+              class="q-mt-sm"
+            />
+            <div
+              class="text-caption text-right q-mt-xs"
+              style="color: var(--svc-fg-faint)"
+            >
               {{ message.length }} / 160 {{ $t("services.charsIncluded") }}
             </div>
           </div>
@@ -97,13 +139,19 @@
           <div v-else-if="step === 'pay'" data-testid="pay-step">
             <div class="svc-qr">[ {{ $t("services.qrPlaceholder") }} ]</div>
             <div class="svc-escrow">
-              {{ $t("services.escrowHeld") }} <b>{{ $t("services.escrowClaimed") }}</b>
+              {{ $t("services.escrowHeld") }}
+              <b>{{ $t("services.escrowClaimed") }}</b>
             </div>
             <!-- A refusal is data: show the machine reason and never hide it. -->
             <div v-if="payErrorKey" class="svc-warn" data-testid="pay-error">
               <div>{{ $t(payErrorKey) }}</div>
-              <div v-if="payErrorReason" class="svc-err-reason" data-testid="pay-error-reason">
-                {{ payErrorReason }}<span v-if="payErrorDetail"> — {{ payErrorDetail }}</span>
+              <div
+                v-if="payErrorReason"
+                class="svc-err-reason"
+                data-testid="pay-error-reason"
+              >
+                {{ payErrorReason
+                }}<span v-if="payErrorDetail"> — {{ payErrorDetail }}</span>
               </div>
             </div>
           </div>
@@ -111,12 +159,16 @@
           <div v-else data-testid="sent-step">
             <div
               class="svc-result"
-              :class="result && result.accepted ? 'svc-result-ok' : 'svc-result-bad'"
+              :class="
+                result && result.accepted ? 'svc-result-ok' : 'svc-result-bad'
+              "
               data-testid="send-result"
             >
-              {{ result && result.accepted
-                ? $t("services.resultAccepted")
-                : $t("services.resultNotAccepted") }}
+              {{
+                result && result.accepted
+                  ? $t("services.resultAccepted")
+                  : $t("services.resultNotAccepted")
+              }}
             </div>
             <div v-if="result && result.id" class="svc-kv">
               <b>{{ $t("services.resultId") }}</b>
@@ -126,7 +178,11 @@
               <b>{{ $t("services.resultStatus") }}</b>
               <span data-testid="result-status">{{ result.status }}</span>
             </div>
-            <div v-if="result && result.refunded" class="svc-kv" data-testid="result-refunded">
+            <div
+              v-if="result && result.refunded"
+              class="svc-kv"
+              data-testid="result-refunded"
+            >
               <b>{{ $t("services.resultRefunded") }}</b>
             </div>
             <div
@@ -137,7 +193,9 @@
               {{ $t(result.errorKey) }}
             </div>
             <!-- THE honesty caveat: always shown, never conditional. -->
-            <div class="svc-warn" data-testid="no-receipts">{{ $t("services.noReceipts") }}</div>
+            <div class="svc-warn" data-testid="no-receipts">
+              {{ $t("services.noReceipts") }}
+            </div>
           </div>
         </q-card-section>
 
@@ -160,7 +218,12 @@
           >
             {{ paying ? $t("services.paying") : $t("services.payFromWallet") }}
           </button>
-          <button v-else class="svc-ghost" data-testid="retry-btn" @click="retry">
+          <button
+            v-else
+            class="svc-ghost"
+            data-testid="retry-btn"
+            @click="retry"
+          >
             {{ $t("services.sendAnother") }}
           </button>
         </q-card-actions>
@@ -341,7 +404,8 @@ export default defineComponent({
 
         this.result = outcome;
         if (!outcome.ok) {
-          this.payErrorKey = (outcome.errorKey ?? "services.payErrors.generic") as PayErrorKey;
+          this.payErrorKey = (outcome.errorKey ??
+            "services.payErrors.generic") as PayErrorKey;
           this.payErrorReason = outcome.reason ?? "";
           this.payErrorDetail = outcome.detail ?? "";
         } else {
@@ -397,7 +461,9 @@ export default defineComponent({
             buildSmsSendArgs(this.recipient.trim(), this.message)
           ),
           quote: result.id ?? "",
-          memo: `${this.selected?.name ?? "Service"} SMS ${result.id ?? ""}`.trim(),
+          memo: `${this.selected?.name ?? "Service"} SMS ${
+            result.id ?? ""
+          }`.trim(),
           type: PaymentMethod.Bolt11,
           id: result.id,
           date: new Date().toISOString(),
@@ -421,16 +487,22 @@ export default defineComponent({
       const catalog = await response.json();
       const allowlist = new Set(catalog.allowlist || []);
       this.services = (catalog.entries || [])
-        .filter((entry: any) => !entry.npub || allowlist.size === 0 || allowlist.has(entry.npub))
+        .filter(
+          (entry: any) =>
+            !entry.npub || allowlist.size === 0 || allowlist.has(entry.npub)
+        )
         .map((entry: any) => {
-          const unavailable = entry.available === false || entry.transport === "whatsapp";
+          const unavailable =
+            entry.available === false || entry.transport === "whatsapp";
           return {
             id: entry.id || entry.npub || entry.name,
             name: entry.name || entry.title || "Unnamed service",
             description: entry.description || entry.summary || "",
             announcement: entry.announcement || entry.description || "",
             price: Number(entry.price_sats || entry.price || 0),
-            maxPrice: entry.max_price_sats ? Number(entry.max_price_sats) : undefined,
+            maxPrice: entry.max_price_sats
+              ? Number(entry.max_price_sats)
+              : undefined,
             fiat: entry.fiat || "",
             available: !unavailable,
             unavailableReason: unavailable

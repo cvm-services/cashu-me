@@ -16,7 +16,11 @@
  * otherwise.
  */
 import { nip19 } from "nostr-tools";
-import { parseToolPayload, type JsonRpcReply, type CvmToolError } from "src/js/cvm";
+import {
+  parseToolPayload,
+  type JsonRpcReply,
+  type CvmToolError,
+} from "src/js/cvm";
 
 /** The npub the SMS service is published under (public/catalog.json). */
 export const SERVICE_NPUB =
@@ -94,9 +98,7 @@ export function npubToHex(npubOrHex: string): string {
     const decoded = nip19.decode(value);
     if (decoded.type === "npub") return decoded.data as string;
   }
-  throw new Error(
-    "SERVICE_PUBKEY must be an npub1… or a 64-char hex pubkey."
-  );
+  throw new Error("SERVICE_PUBKEY must be an npub1… or a 64-char hex pubkey.");
 }
 
 /** The `sms.send` argument object, per the live contract. */
@@ -118,15 +120,21 @@ export function buildSmsSendArgs(
  * back to the documented flat price — and that is flagged, not hidden.
  */
 export function resolvePayPrice(
-  pricing: { ok: true; data: Record<string, unknown> } | { ok: false; error: CvmToolError } | undefined
+  pricing:
+    | { ok: true; data: Record<string, unknown> }
+    | { ok: false; error: CvmToolError }
+    | undefined
 ): { sats: number; source: "live" | "fallback" } {
   if (pricing && pricing.ok) {
     const cap = String(pricing.data.cap ?? "");
     const capMatch = cap.match(/cap:tool:sms\.send:(\d+):sats/);
     const live = Number(
-      capMatch ? capMatch[1] : pricing.data.price ?? pricing.data.price_sats ?? 0
+      capMatch
+        ? capMatch[1]
+        : pricing.data.price ?? pricing.data.price_sats ?? 0
     );
-    if (Number.isFinite(live) && live > 0) return { sats: live, source: "live" };
+    if (Number.isFinite(live) && live > 0)
+      return { sats: live, source: "live" };
   }
   return { sats: FALLBACK_PRICE_SATS, source: "fallback" };
 }
@@ -151,7 +159,9 @@ export function hasAddressableMint(
   serviceMintUrl: string = SERVICE_MINT_URL
 ): boolean {
   const target = serviceMintUrl.replace(/\/+$/, "");
-  return connectedMintUrls.some((url) => (url || "").replace(/\/+$/, "") === target);
+  return connectedMintUrls.some(
+    (url) => (url || "").replace(/\/+$/, "") === target
+  );
 }
 
 const ERROR_KEY_BY_REASON: Record<string, PayErrorKey> = {
@@ -215,20 +225,24 @@ export function readCvmResult(
     };
   }
 
-  const payload = (outcome.reply.result?.content?.[0]?.text
-    ? JSON.parse(outcome.reply.result.content[0].text)
-    : {}) as Record<string, unknown>;
+  const payload = (
+    outcome.reply.result?.content?.[0]?.text
+      ? JSON.parse(outcome.reply.result.content[0].text)
+      : {}
+  ) as Record<string, unknown>;
 
   const accepted = bool(payload.accepted);
   return {
     ok: accepted,
     accepted,
-    bestEffort: payload.best_effort === undefined ? true : bool(payload.best_effort),
+    bestEffort:
+      payload.best_effort === undefined ? true : bool(payload.best_effort),
     // THE honesty rule: computed false, never read from the payload.
     deliveryConfirmed: false,
     id: str(payload.id),
     status: str(payload.status),
-    priceSats: payload.price_sats === undefined ? undefined : Number(payload.price_sats),
+    priceSats:
+      payload.price_sats === undefined ? undefined : Number(payload.price_sats),
     refunded: bool(payload.refunded),
     refundToken: str(payload.refund_token),
     // A send the rail refused to accept still needs a key so the UI can say why.
@@ -250,7 +264,9 @@ export type PayForSmsInput = {
    * `cashuA…`/`cashuB…` encoding. Injected so tests never touch a mint.
    * Throws when the balance is too low.
    */
-  mintToken: (opts: { sats: number }) => Promise<{ token: string; sats: number }>;
+  mintToken: (opts: {
+    sats: number;
+  }) => Promise<{ token: string; sats: number }>;
   to: string;
   body: string;
   wallet: { hasSeed: boolean; mintsCount: number };
@@ -272,7 +288,9 @@ export type PayForSmsInput = {
  * Nothing is minted until steps 1–3 pass, so no sats move for a token the
  * service would refuse.
  */
-export async function payForSms(input: PayForSmsInput): Promise<PaidSendResult> {
+export async function payForSms(
+  input: PayForSmsInput
+): Promise<PaidSendResult> {
   const { client, mintToken, to, body, wallet, connectedMintUrls } = input;
   const serviceMintUrl = input.serviceMintUrl ?? SERVICE_MINT_URL;
 
@@ -297,7 +315,9 @@ export async function payForSms(input: PayForSmsInput): Promise<PaidSendResult> 
   try {
     const reply = await client.call("sms.pricing", { to });
     const text = reply.result?.content?.[0]?.text;
-    const data = text ? (JSON.parse(String(text)) as Record<string, unknown>) : {};
+    const data = text
+      ? (JSON.parse(String(text)) as Record<string, unknown>)
+      : {};
     pricingPayload = { ok: true, data };
   } catch (error: any) {
     if (isClientTimeout(error)) {
@@ -342,10 +362,7 @@ export async function payForSms(input: PayForSmsInput): Promise<PaidSendResult> 
   // 5. Send with the token.
   let reply: JsonRpcReply;
   try {
-    reply = await client.call(
-      "sms.send",
-      buildSmsSendArgs(to, body, token)
-    );
+    reply = await client.call("sms.send", buildSmsSendArgs(to, body, token));
   } catch (error: any) {
     return unreachable(error);
   }

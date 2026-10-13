@@ -16,7 +16,9 @@ describe("ServicesPage pay step is wired to the CVM", () => {
     expect(src).toMatch(/data-testid="confirm-pay-btn"/);
     expect(src).toMatch(/@click="payNow"/);
     // the old placeholder — pressing pay must never jump straight to 'sent'
-    expect(src).not.toMatch(/data-testid="confirm-pay-btn"[^>]*@click="step = 'sent'"/);
+    expect(src).not.toMatch(
+      /data-testid="confirm-pay-btn"[^>]*@click="step = 'sent'"/
+    );
   });
 
   it("imports the payment path and the transport", () => {
@@ -86,7 +88,9 @@ describe("wallet.mintPaymentToken is the mint/token step", () => {
   it("invalidates the sent proofs so a failed remote send cannot re-spend them", () => {
     // `send(proofs, wallet, amount, true, true, …)` — the 4th arg is invalidate
     const src = wallet();
-    const call = src.match(/await this\.send\(\s*proofs,\s*wallet,\s*amount,([\s\S]*?)\);/);
+    const call = src.match(
+      /await this\.send\(\s*proofs,\s*wallet,\s*amount,([\s\S]*?)\);/
+    );
     expect(call).not.toBeNull();
     expect(call![1].replace(/\s|\/\/[^\n]*/g, "")).toMatch(/^true,true,/);
   });

@@ -78,7 +78,11 @@ describe("resolvePayPrice", () => {
   it("takes the live rail price from sms.pricing", () => {
     const price = resolvePayPrice({
       ok: true,
-      data: { price: 2900, price_sats: 2900, cap: "cap:tool:sms.send:2900:sats" },
+      data: {
+        price: 2900,
+        price_sats: 2900,
+        cap: "cap:tool:sms.send:2900:sats",
+      },
     });
     expect(price).toEqual({ sats: 2900, source: "live" });
   });
@@ -204,7 +208,11 @@ describe("readCvmResult", () => {
     // is downgraded rather than surfaced as truth.
     const result = readCvmResult({
       ok: true,
-      reply: paidReply({ accepted: true, best_effort: true, delivery_confirmed: true }),
+      reply: paidReply({
+        accepted: true,
+        best_effort: true,
+        delivery_confirmed: true,
+      }),
     });
     expect(result.deliveryConfirmed).toBe(false);
   });
@@ -239,7 +247,10 @@ describe("readCvmResult", () => {
   it("treats an unreachable CVM as an honest failure with no send", () => {
     const result = readCvmResult({
       ok: false,
-      error: { reason: "unreachable", hint: "No reply from the CVM within 45000 ms" },
+      error: {
+        reason: "unreachable",
+        hint: "No reply from the CVM within 45000 ms",
+      },
     });
     expect(result.ok).toBe(false);
     expect(result.errorKey).toBe("services.payErrors.unreachable");
@@ -266,7 +277,9 @@ describe("orchestration (payForSms) with an injected client", () => {
         if (tool === "sms.pricing") {
           return {
             result: {
-              content: [{ type: "text", text: JSON.stringify({ price: 2900 }) }],
+              content: [
+                { type: "text", text: JSON.stringify({ price: 2900 }) },
+              ],
             },
           };
         }
@@ -355,7 +368,9 @@ describe("orchestration (payForSms) with an injected client", () => {
     const { payForSms } = await import("src/js/cvmPayment");
     const fakeClient = {
       call: vi.fn(async () => {
-        throw new Error("No reply from the CVM within 45000 ms (tool sms.pricing).");
+        throw new Error(
+          "No reply from the CVM within 45000 ms (tool sms.pricing)."
+        );
       }),
     };
     const mint = vi.fn();
