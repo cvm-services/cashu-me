@@ -153,7 +153,9 @@ export class CvmClient {
 
   constructor(options: CvmClientOptions) {
     this.opts = { timeoutMs: DEFAULT_TIMEOUT_MS, ...options };
-    this.pool = new SimplePool();
+    // Test seam: a caller (tests only) may inject a fake pool; production
+    // always gets a real SimplePool.
+    this.pool = (options as { pool?: SimplePool }).pool ?? new SimplePool();
   }
 
   /**
@@ -199,7 +201,22 @@ export class CvmClient {
     );
 
     try {
-      await Promise.any(this.pool.publish(this.opts.relays, wrap));
+      // A publish that never settles (no relay connection) must not hang the
+      // call forever — race it against the same deadline the reply poll uses.
+      await Promise.race([
+        Promise.any(this.pool.publish(this.opts.relays, wrap)),
+        new Promise<never>((_, reject) =>
+          setTimeout(
+            () =>
+              reject(
+                new Error(
+                  `Relay publish did not settle within ${this.opts.timeoutMs} ms (tool ${tool}).`
+                )
+              ),
+            this.opts.timeoutMs
+          )
+        ),
+      ]);
 
       const started = Date.now();
       while (Date.now() - started < this.opts.timeoutMs) {
