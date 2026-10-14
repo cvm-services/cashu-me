@@ -231,6 +231,12 @@ export const useNostrStore = defineStore("nostr", {
     },
     walletSeedGenerateKeyPair: async function () {
       const walletStore = useWalletStore();
+      // Fresh install: there is no seed yet. Bail out instead of deriving a
+      // keypair from empty bytes — callers run from page created() hooks and
+      // must not crash before onboarding.
+      if (!walletStore.hasSeed || walletStore.seed.length < 32) {
+        return;
+      }
       const sk = walletStore.seed.slice(0, 32);
       const walletPublicKeyHex = getPublicKey(sk); // `pk` is a hex string
       const walletPrivateKeyHex = bytesToHex(sk);
@@ -240,6 +246,15 @@ export const useNostrStore = defineStore("nostr", {
     },
     initWalletSeedPrivateKeySigner: async function () {
       await this.walletSeedGenerateKeyPair();
+      // Fresh install: there is no seed yet, so walletSeedGenerateKeyPair()
+      // returned early and `seedSigner` is still its default `{}`. Bailing out
+      // here prevents `new NDK({ signer: {} })`, which throws
+      // "e?.user is not a function" and blanks the entire app before
+      // onboarding can run.
+      const walletStore = useWalletStore();
+      if (!walletStore.hasSeed || walletStore.seed.length < 32) {
+        return;
+      }
       // TODO: remove duplicate privateKeysigner
       this.privateKeySigner = this.seedSigner;
       this.signerType = SignerType.SEED;

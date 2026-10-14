@@ -1,0 +1,435 @@
+// ---------------------------------------------------------------------------
+// cashu.sms — two shipped designs, one toggle.
+//
+// LIGHT  "Calm storefront"  warm off-white ground, green accent, book-ish serif
+// DARK   "Terminal"         near-black ground, sats-orange accent, monospace
+//
+// Tokens are set on :root and flipped by .app-theme-dark (written by
+// src/js/theme.ts). Quasar's own dark mode is applied in parallel so stock
+// components (q-dialog, q-input) follow the same choice.
+// ---------------------------------------------------------------------------
+
+:root,
+.app-theme-light {
+  --svc-bg: #faf9f7;
+  --svc-surface: #ffffff;
+  --svc-surface-alt: #f4f2ee;
+  --svc-border: #ece9e2;
+  --svc-border-strong: #dcd8ce;
+  --svc-fg: #22272b;
+  --svc-fg-dim: #8a8578;
+  --svc-fg-faint: #a29d90;
+  --svc-accent: #0f6a5b;
+  --svc-accent-fg: #ffffff;
+  --svc-accent-soft: #eef4f0;
+  --svc-price: #0f6a5b;
+  --svc-warn-bg: #fdf6e7;
+  --svc-warn-border: #f0e3c0;
+  --svc-warn-fg: #7a6a3a;
+  --svc-serif: Georgia, "Times New Roman", serif;
+  --svc-mono: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+  --svc-radius: 16px;
+  --svc-shadow: 0 1px 3px rgba(30, 40, 35, 0.05);
+}
+
+.app-theme-dark {
+  --svc-bg: #0d0f12;
+  --svc-surface: #16181d;
+  --svc-surface-alt: #1a1d22;
+  --svc-border: #1c1f24;
+  --svc-border-strong: #262a31;
+  --svc-fg: #e8e6e1;
+  --svc-fg-dim: #9a958c;
+  --svc-fg-faint: #6d685f;
+  --svc-accent: #f7931a;
+  --svc-accent-fg: #141414;
+  --svc-accent-soft: #16130d;
+  --svc-price: #f7931a;
+  --svc-warn-bg: #16130d;
+  --svc-warn-border: #3a2f16;
+  --svc-warn-fg: #d8b878;
+  --svc-radius: 12px;
+  --svc-shadow: none;
+}
+
+/* The page ground + type follow the active design. */
+body.body--light .services-page,
+.app-theme-light .services-page {
+  background: var(--svc-bg);
+  color: var(--svc-fg);
+}
+
+.services-page {
+  background: var(--svc-bg);
+  color: var(--svc-fg);
+  min-height: 100%;
+}
+
+.services-page .svc-shell {
+  max-width: 680px;
+  margin: 0 auto;
+}
+
+/* Hero ------------------------------------------------------------------- */
+.services-page .svc-hero {
+  padding: 22px 4px 6px;
+}
+
+.services-page .svc-hero h1 {
+  font-family: var(--svc-serif);
+  font-size: 30px;
+  font-weight: 400;
+  line-height: 1.16;
+  letter-spacing: -0.01em;
+  margin: 0;
+  color: var(--svc-fg);
+}
+
+.app-theme-dark .services-page .svc-hero h1 {
+  font-family: inherit;
+  font-weight: 800;
+  letter-spacing: -0.02em;
+}
+
+.services-page .svc-hero h1 em {
+  font-style: normal;
+  color: var(--svc-accent);
+}
+
+.services-page .svc-hero p,
+.services-page .svc-rate {
+  margin: 10px 0 0;
+  color: var(--svc-fg-dim);
+  font-size: 13.5px;
+}
+
+.services-page .svc-rate b {
+  color: var(--svc-price);
+  font-size: 17px;
+  margin-right: 5px;
+  font-family: var(--svc-mono);
+}
+
+/* Cards ------------------------------------------------------------------ */
+.services-page .svc-list {
+  margin-top: 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.services-page .svc-card {
+  background: var(--svc-surface);
+  border: 1px solid var(--svc-border);
+  border-radius: var(--svc-radius);
+  box-shadow: var(--svc-shadow);
+  padding: 16px 18px;
+  cursor: pointer;
+  transition: border-color 0.15s ease, transform 0.15s ease;
+}
+
+.services-page .svc-card:hover:not(.svc-unavailable) {
+  border-color: var(--svc-accent);
+}
+
+.services-page .svc-card:active:not(.svc-unavailable) {
+  transform: scale(0.995);
+}
+
+.services-page .svc-card.svc-unavailable {
+  background: var(--svc-surface-alt);
+  border-style: dashed;
+  cursor: default;
+}
+
+.services-page .svc-card .svc-head {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.services-page .svc-card .svc-ic {
+  flex: 0 0 auto;
+  width: 42px;
+  height: 42px;
+  border-radius: 50%;
+  background: var(--svc-accent-soft);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 19px;
+}
+
+.app-theme-dark .services-page .svc-card .svc-ic {
+  border-radius: 9px;
+  background: var(--svc-surface-alt);
+}
+
+.services-page .svc-card .svc-name {
+  font-size: 16.5px;
+  font-weight: 600;
+  color: var(--svc-fg);
+  line-height: 1.2;
+}
+
+.services-page .svc-card .svc-sub {
+  font-size: 12.5px;
+  color: var(--svc-fg-dim);
+}
+
+/* sats first, fiat second and smaller — everywhere a price appears */
+.services-page .svc-card .svc-price {
+  margin-top: 12px;
+  display: flex;
+  align-items: baseline;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.services-page .svc-card .svc-price .sats {
+  font-family: var(--svc-mono);
+  font-size: 21px;
+  font-weight: 700;
+  color: var(--svc-price);
+}
+
+.services-page .svc-card .svc-price .fiat {
+  font-size: 12px;
+  color: var(--svc-fg-faint);
+}
+
+.services-page .svc-card .svc-go {
+  margin-top: 12px;
+  text-align: right;
+  color: var(--svc-accent);
+  font-weight: 700;
+  font-size: 14px;
+}
+
+.services-page .svc-card .svc-why {
+  margin-top: 10px;
+  font-size: 12.5px;
+  font-style: italic;
+  color: var(--svc-fg-dim);
+}
+
+.services-page .svc-card.svc-unavailable .svc-name,
+.services-page .svc-card.svc-unavailable .svc-price .sats {
+  color: var(--svc-fg-faint);
+}
+
+.services-page .svc-card.svc-unavailable .svc-ic {
+  filter: grayscale(1);
+}
+
+/* Trust chip + disclosure ------------------------------------------------- */
+.services-page .svc-trust {
+  margin: 24px auto 0;
+  text-align: center;
+  font-size: 12.5px;
+  color: var(--svc-fg-dim);
+  max-width: 320px;
+}
+
+.services-page .svc-trust b {
+  color: var(--svc-accent);
+  font-weight: 600;
+}
+
+.services-page .svc-details {
+  margin-top: 16px;
+  text-align: center;
+}
+
+.services-page .svc-details summary {
+  cursor: pointer;
+  color: var(--svc-accent);
+  font-size: 12.5px;
+  font-weight: 600;
+  list-style: none;
+}
+
+.services-page .svc-details summary::-webkit-details-marker {
+  display: none;
+}
+
+.services-page .svc-details p {
+  margin: 8px auto 0;
+  font-size: 12px;
+  color: var(--svc-fg-dim);
+  max-width: 420px;
+  text-align: left;
+}
+
+/* Payment steps (dialog) -------------------------------------------------- */
+.svc-dialog {
+  background: var(--svc-surface) !important;
+  color: var(--svc-fg) !important;
+  min-width: min(92vw, 420px);
+}
+
+.svc-dialog .svc-dialog-title {
+  font-size: 17px;
+  font-weight: 600;
+}
+
+.svc-dialog .svc-amount {
+  display: flex;
+  align-items: baseline;
+  gap: 8px;
+  flex-wrap: wrap;
+  margin-top: 10px;
+}
+
+.svc-dialog .svc-amount .sats {
+  font-family: var(--svc-mono);
+  font-size: 26px;
+  font-weight: 800;
+  color: var(--svc-price);
+}
+
+.svc-dialog .svc-amount .fiat {
+  color: var(--svc-fg-faint);
+  font-size: 12.5px;
+}
+
+.svc-dialog .svc-steps {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin: 16px 0 4px;
+}
+
+.svc-dialog .svc-steps .step {
+  font-size: 11px;
+  color: var(--svc-fg-faint);
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+}
+
+.svc-dialog .svc-steps .step.on {
+  color: var(--svc-accent);
+  font-weight: 700;
+}
+
+.svc-dialog .svc-steps .sep {
+  flex: 0 0 16px;
+  height: 2px;
+  background: var(--svc-border-strong);
+}
+
+.svc-dialog .svc-escrow {
+  margin-top: 12px;
+  font-size: 12.5px;
+  color: var(--svc-fg-dim);
+}
+
+.svc-dialog .svc-escrow b {
+  color: var(--svc-fg);
+}
+
+.svc-dialog .svc-warn {
+  margin-top: 14px;
+  background: var(--svc-warn-bg);
+  border: 1px solid var(--svc-warn-border);
+  color: var(--svc-warn-fg);
+  border-radius: 12px;
+  padding: 10px 13px;
+  font-size: 12.5px;
+}
+
+.svc-dialog .svc-qr {
+  width: 160px;
+  height: 160px;
+  margin: 14px auto 6px;
+  border: 1px dashed var(--svc-border-strong);
+  border-radius: 14px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  font-size: 11px;
+  color: var(--svc-fg-faint);
+  padding: 14px;
+}
+
+.svc-dialog .svc-cta {
+  width: 100%;
+  padding: 14px;
+  border: none;
+  border-radius: 13px;
+  background: var(--svc-accent);
+  color: var(--svc-accent-fg);
+  font-size: 15.5px;
+  font-weight: 800;
+}
+
+.svc-dialog .svc-cta:disabled {
+  opacity: 0.55;
+  cursor: default;
+}
+
+/* Honest result surface: accepted vs not, never "delivered". */
+.svc-dialog .svc-result {
+  margin-top: 12px;
+  padding: 10px 13px;
+  border-radius: 12px;
+  font-size: 13.5px;
+  font-weight: 700;
+  border: 1px solid var(--svc-border-strong);
+}
+
+.svc-dialog .svc-result-ok {
+  background: var(--svc-accent-soft);
+  border-color: var(--svc-accent);
+  color: var(--svc-accent);
+}
+
+.svc-dialog .svc-result-bad {
+  background: var(--svc-warn-bg);
+  border-color: var(--svc-warn-border);
+  color: var(--svc-warn-fg);
+}
+
+.svc-dialog .svc-kv {
+  display: flex;
+  gap: 8px;
+  align-items: baseline;
+  margin-top: 8px;
+  font-size: 12.5px;
+  color: var(--svc-fg-dim);
+  word-break: break-all;
+}
+
+.svc-dialog .svc-kv b {
+  color: var(--svc-fg);
+  flex: 0 0 auto;
+}
+
+.svc-dialog .svc-err-reason {
+  margin-top: 4px;
+  font-family: var(--svc-mono);
+  font-size: 11px;
+  opacity: 0.85;
+  word-break: break-word;
+}
+
+.svc-dialog .svc-ghost {
+  width: 100%;
+  padding: 13px;
+  border: 1px solid var(--svc-accent);
+  border-radius: 13px;
+  background: transparent;
+  color: var(--svc-accent);
+  font-size: 14.5px;
+  font-weight: 700;
+}
+
+/* ---------------------------------------------------------------------------
+// Services console (facilitator) inherits the same tokens so both personas
+// share one design system.
+// ------------------------------------------------------------------------- */
+.services-console-page {
+  background: var(--svc-bg);
+  color: var(--svc-fg);
+}

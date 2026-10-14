@@ -107,3 +107,7 @@ body,
 .q-checkbox__svg {
   color: var(--q-dark);
 }
+
+// cashu.sms design system: two shipped designs (light "calm storefront" /
+// dark "terminal") flipped by the header theme toggle.
+@import "./services.scss";
