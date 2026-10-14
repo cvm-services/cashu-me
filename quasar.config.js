@@ -42,7 +42,7 @@ module.exports = configure(function (/* ctx */) {
     // app boot file (/src/boot)
     // --> boot files are part of "main.js"
     // https://v2.quasar.dev/quasar-cli/boot-files
-    boot: ["base", "global-components", "i18n"],
+    boot: ["theme", "base", "global-components", "i18n"],
 
     // https://v2.quasar.dev/quasar-cli-vite/quasar-config-js#css
     css: ["app.scss", "base.scss", "settings.scss"],
@@ -68,7 +68,14 @@ module.exports = configure(function (/* ctx */) {
         node: "node16",
       },
 
-      vueRouterMode: "history", // available values: 'hash', 'history'
+      // Static PWA hosts (nsite / Blossom gateways) resolve a path to the
+      // *literal* object for that path and have no server rewrite. "history"
+      // mode would therefore need index.html mirrored at every route path so a
+      // deep link (e.g. /services) reaches the app instead of a 404. Hash mode
+      // makes every route resolve to the one index.html that always exists.
+      // Set VUE_ROUTER_MODE=history for deployments behind a rewriting server.
+      vueRouterMode:
+        process.env.VUE_ROUTER_MODE === "history" ? "history" : "hash",
       // vueRouterBase,
       // vueDevtools,
       // vueOptionsAPI: false,

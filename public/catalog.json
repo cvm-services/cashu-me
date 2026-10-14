@@ -1,0 +1,36 @@
+{
+  "entries": [
+    {
+      "id": "sms-cvm",
+      "name": "SMS",
+      "description": "Send an SMS to any US/Canada number, paid in Cashu sats.",
+      "announcement": "ContextVM SMS service. Send a text message to any +1 number. Flat price, paid per message with Cashu ecash escrow; undelivered sends are refunded. No account required.",
+      "price_sats": 2900,
+      "fiat": "",
+      "transport": "sms",
+      "npub": "npub1yfd2zvsq3lmz7n6ckjt77rm0a56s3d49n2xvpc0ct2tzx24c4wuqn4h6hf",
+      "available": true,
+      "fiat_estimate_eur": 0.86
+    },
+    {
+      "id": "whatsapp-cvm",
+      "name": "WhatsApp",
+      "description": "Send a WhatsApp message, paid in Cashu sats.",
+      "announcement": "ContextVM WhatsApp service. Delivery runs over the official Android client. This rail is not connected in this release, so no payment can be taken.",
+      "price_sats": 2500,
+      "fiat": "",
+      "transport": "whatsapp",
+      "npub": "npub1yfd2zvsq3lmz7n6ckjt77rm0a56s3d49n2xvpc0ct2tzx24c4wuqn4h6hf",
+      "available": false,
+      "fiat_estimate_eur": 0.74
+    }
+  ],
+  "allowlist": [],
+  "class_tally": {},
+  "counts": {
+    "entries": 2
+  },
+  "fiat_rates": {
+    "EUR": 0.0002966
+  }
+}

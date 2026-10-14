@@ -53,6 +53,99 @@ export default {
   common: {
     fee: "Fee",
   },
+  services: {
+    title: "Services",
+    subtitle: "Discover services offered by ContextVM providers.",
+    wallet: "Wallet",
+    search: "Search services",
+    unavailable: "Unavailable",
+    fiatUnavailable: "Fiat price unavailable",
+    heroTitle: "Text anyone.",
+    heroAccent: "Pay in sats.",
+    heroSubtitle: "Per-message ecash. No account, nothing stored.",
+    rateSuffix: "sats per message · 1 segment (160 chars) included",
+    writeMessage: "Write a message",
+    trustNoAccount: "No account",
+    trustNoData: "No personal data",
+    trustPayPerMessage: "Pay per message",
+    detailsBody:
+      "Runs as a ContextVM service over Nostr. Your sats are held in escrow and claimed only when the service accepts the send. US and Canada numbers only. The SMS rail provides no delivery receipts — you pay for the send, not the delivery.",
+    stepCompose: "Compose",
+    stepPay: "Pay",
+    stepSend: "Send",
+    toNumber: "Recipient number (US / Canada)",
+    messageLabel: "Message",
+    charsIncluded: "chars · 1 segment included",
+    payAmount: "You pay:",
+    payTo: "Paid to the service via mint:",
+
+    noReceipts:
+      "The SMS rail gives no delivery receipts - you paid for the send, not the delivery.",
+    continueToPayment: "Continue to payment",
+    payFromWallet: "Pay from wallet",
+    paying: "Paying…",
+    sendAnother: "Send another message",
+    resultAccepted:
+      "Accepted by the rail. The message was sent to the carrier — not confirmed delivered.",
+    resultNotAccepted: "Not sent. The rail did not accept this message.",
+    resultId: "Send id",
+    resultStatus: "Rail status",
+    resultRefunded: "Refunded to your wallet",
+    payErrors: {
+      noWallet:
+        "Your wallet has no seed yet, so it cannot pay. Set up your wallet first.",
+      noMint: "No mint is connected, so there is no ecash to pay with.",
+      wrongMint:
+        "This service escrows at a specific mint. Add that mint to pay for this service.",
+      insufficientFunds:
+        "Not enough balance to cover the price plus the mint fee.",
+      refused: "The service refused the payment. No message was sent.",
+      spent: "The token was already spent or is in an unknown state.",
+      badNumber: "That number is not one the rail can serve (US / Canada, +1).",
+      paced:
+        "The rail is pacing sends right now. Nothing was charged — try again shortly.",
+      railDown:
+        "The rail is unavailable. Nothing was sent and the postage is refunded.",
+      unreachable: "No reply from the service. Nothing was sent.",
+      generic: "The payment could not be completed. No message was sent.",
+    },
+    pay: "Pay with Cashu",
+    details: "Details",
+    empty: "No services found.",
+    catalogUnavailable: "The service catalogue is currently unavailable.",
+    confirmTitle: "Review payment",
+    paymentNotice: "Payment uses your Cashu wallet.",
+    notWired: "Payment is not wired end-to-end in this release.",
+    providerTitle: "Are you a service provider?",
+    providerDescription:
+      "Request catalogue access without changing the curator-managed allow-list.",
+    requestAccess: "Request access",
+    requestAccessTitle: "Request catalogue access",
+    requestAccessDescription:
+      "Your request is attributable to the provider npub and never grants access automatically.",
+    providerNpub: "Provider npub",
+    accessState: "Your current state",
+    requestSignedNotice:
+      "The signed request is prepared locally; registry curators must list you in git.",
+    submitRequest: "Submit request",
+    requestSaved: "Request recorded locally as requested.",
+  },
+  console: {
+    title: "Facilitator console",
+    subtitle: "Operate your ContextVM services.",
+    wallet: "Wallet",
+    queue: "Queue",
+    money: "Money",
+    services: "Services",
+    empty: "No requests in queue.",
+    pending: "Pending settlement",
+    refunds: "Refunds owed",
+    refundsDescription: "Refunds are tracked as a first-class state.",
+    announceTitle: "Service announcement",
+    announcePlaceholder: "Describe your service and availability",
+    save: "Save announcement",
+    saved: "Announcement saved locally.",
+  },
   MultinutPicker: {
     payment: "Multinut payment",
     selectMints: "Select one or multiple mints to execute a payment from.",
@@ -110,6 +203,7 @@ export default {
     },
   },
   MainHeader: {
+    theme: { toggle: "Switch light / dark design" },
     menu: {
       settings: {
         title: "Settings",

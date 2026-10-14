@@ -1,0 +1,11 @@
+- Baseline: clean tree, wt/cashu-services-ui @ faaa015; PROGRESS.md + REPORT.md CONFIRMED committed inside faaa015 (leak, not rewritten)
+- Disk: 4.3G free before -> 2.6G after; never below 1.5G stop threshold
+- Install: not needed; node_modules already 958 pkgs/952M, quasar+vitest+@typescript-eslint/parser PRESENT, npm ls clean for all 52 top-level deps
+- Lint: npm run lint exit 0, zero findings (~66s)
+- Test: npm run test:ci -> 29 files / 274 tests passed (111.8s)
+- Build: npm run build:pwa exit 0, "Build succeeded", output dist/pwa, du -sh = 11M (~16 min)
+- PWA artifacts: index.html (manifest link+theme-color) yes, manifest.json yes (name/start_url/icons), manifest.webmanifest yes, sw.js Workbox precache w/ revisions yes, workbox runtime yes, icons yes -> genuine installable PWA
+- SMS exposure: ABSENT - zero "sms" matches repo-wide; no SMS ContextVM entry point
+- WhatsApp exposure: STILL FORCED UNAVAILABLE, no Pay action - decided at src/pages/ServicesPage.vue:113 (`&& entry.transport !== "whatsapp"`) + v-if guard at line 34; confirmed in compiled dist/pwa/assets/ServicesPage.acffcb1d.js
+- Bonus: even the available fixture's Pay is a stub (services.notWired), honestly disclosed
+- Report: REPORT-pwa-build.md written; no merge/push/history-rewrite

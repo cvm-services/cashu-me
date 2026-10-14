@@ -448,8 +448,10 @@ export default {
       }
       if (useWelcomeStore().showWelcome) {
         const currentQuery = window.location.search;
-        const currentHash = window.location.hash;
-        this.$router.push("/welcome" + currentQuery + currentHash);
+        // Do NOT append window.location.hash: with the hash router the current
+        // hash IS the router path, so concatenating it yields "/welcome#/" and
+        // the router never lands on the welcome route.
+        this.$router.push("/welcome" + currentQuery);
       }
     },
     setTab: function (to) {

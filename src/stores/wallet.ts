@@ -291,7 +291,28 @@ export const useWalletStore = defineStore("wallet", {
     };
   },
   getters: {
+    /**
+     * True once the wallet has a usable mnemonic. Callers that derive keys from
+     * the seed (Nostr signers, DM subscriptions, NIP-60) MUST check this before
+     * touching `seed`, otherwise a fresh install throws "Invalid mnemonic".
+     */
+    hasSeed(): boolean {
+      return (
+        typeof this.mnemonic === "string" &&
+        this.mnemonic.trim().length > 0 &&
+        this.mnemonic.trim().split(/\s+/).length >= 12
+      );
+    },
+    /**
+     * BIP-39 seed bytes, or an empty array before onboarding.
+     *
+     * Returning empty bytes (instead of throwing) keeps page `created()` hooks
+     * alive on a fresh install: the wallet shows onboarding and the seed-derived
+     * code paths no-op until a mnemonic exists. An all-zero keypair is never
+     * published because `walletSeedGenerateKeyPair` refuses to run without a seed.
+     */
     seed(): Uint8Array {
+      if (!this.hasSeed) return new Uint8Array(0);
       return mnemonicToSeedSync(this.mnemonic);
     },
   },
@@ -779,6 +800,42 @@ export const useWalletStore = defineStore("wallet", {
       } finally {
         uIStore.unlockMutex();
       }
+    },
+    /**
+     * Mint a Cashu token worth `amount` sats for an external payer (the CVM
+     * pay step). Selects proofs from the active mint, swaps so the encoded
+     * proofs sum to `amount` PLUS the mint's own input fee (includeFees), then
+     * serialises them to a `cashuA…`/`cashuB…` bearer string.
+     *
+     * The proofs are removed from the store (`invalidate`): the token leaves
+     * the wallet the moment it is encoded, so a failed remote send must not
+     * leave spendable-looking proofs behind. Ownership of a failed send is
+     * reclaimed by the service's refund token, not by re-spending here.
+     *
+     * The trailing fee headroom matters: the receiving service deducts the
+     * mint's input fee from the token before comparing against its price, so a
+     * token of exactly `amount` would come up short.
+     */
+    mintPaymentToken: async function (
+      amount: number,
+      mutexPriority: MutexPriority = "normal"
+    ): Promise<{ token: string; sats: number }> {
+      const proofsStore = useProofsStore();
+      const proofs = await proofsStore.getProofs();
+      const wallet = await this.activeWallet(true);
+      const { sendProofs } = await this.send(
+        proofs,
+        wallet,
+        amount,
+        true, // invalidate — the token is leaving the wallet
+        true, // includeFees — the receiver deducts the mint's input fee
+        mutexPriority
+      );
+      if (!sendProofs.length) {
+        throw new Error("could not split proofs.");
+      }
+      const token = proofsStore.serializeProofs(sendProofs);
+      return { token, sats: proofsStore.sumProofs(sendProofs) };
     },
     redeem: async function () {
       /*
