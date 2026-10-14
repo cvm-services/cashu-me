@@ -113,9 +113,7 @@ test("opening a fresh wallet reaches onboarding without unhandled initialization
   const wallet = new WalletUi(page);
   await wallet.goto();
   await expect(page.getByTestId("onboarding-start")).toBeVisible();
-  test.fail(
-    true,
-    "UI-010: the home page initializes Nostr before a fresh wallet has a seed"
-  );
+  // UI-010 FIXED (commit 3e40c3c): initWalletSeedPrivateKeySigner now guards
+  // on a missing seed, so a fresh install boots without unhandled errors.
   expect(errors).toEqual([]);
 });

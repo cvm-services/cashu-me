@@ -137,10 +137,13 @@
           </div>
 
           <div v-else-if="step === 'pay'" data-testid="pay-step">
-            <div class="svc-qr">[ {{ $t("services.qrPlaceholder") }} ]</div>
+            <div class="svc-amount" data-testid="pay-amount">
+              {{ $t("services.payAmount") }}
+              <b>{{ payAmountLabel }}</b>
+            </div>
             <div class="svc-escrow">
-              {{ $t("services.escrowHeld") }}
-              <b>{{ $t("services.escrowClaimed") }}</b>
+              {{ $t("services.payTo") }}
+              <b data-testid="pay-mint">{{ serviceMint }}</b>
             </div>
             <!-- A refusal is data: show the machine reason and never hide it. -->
             <div v-if="payErrorKey" class="svc-warn" data-testid="pay-error">
@@ -290,6 +293,16 @@ export default defineComponent({
     };
   },
   computed: {
+    /** Sats the user will pay for this send (live price when known). */
+    payAmountLabel(): string {
+      const live = this.result?.priceSats;
+      const amount = live && live > 0 ? live : this.selected?.price ?? 0;
+      return `${amount} sats`;
+    },
+    /** The mint the service takes payment at (one of the wallet's mints). */
+    serviceMint(): string {
+      return SERVICE_MINT_URL;
+    },
     filteredServices(): CatalogService[] {
       return this.services;
     },
