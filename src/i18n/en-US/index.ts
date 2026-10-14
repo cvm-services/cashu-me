@@ -76,9 +76,9 @@ export default {
     toNumber: "Recipient number (US / Canada)",
     messageLabel: "Message",
     charsIncluded: "chars · 1 segment included",
-    qrPlaceholder: "mockup invoice placeholder - no real token in this file",
-    escrowHeld: "Held in escrow until your message is sent.",
-    escrowClaimed: "The service claims payment only on accept.",
+    payAmount: "You pay:",
+    payTo: "Paid to the service via mint:",
+
     noReceipts:
       "The SMS rail gives no delivery receipts - you paid for the send, not the delivery.",
     continueToPayment: "Continue to payment",
