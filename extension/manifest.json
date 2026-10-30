@@ -3,6 +3,7 @@
   "description": "A privacy-preserving ecash wallet for Bitcoin Lightning",
   "icons": { "128": "128.png", "32": "32.png", "16": "16.png" },
   "manifest_version": 3,
+  "key": "MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAkFtIubKJt02W127wIwpKUKW4PtjqhmOqFvMnQlBZV9O6u+sRm4PQPn906ikrEeNc4jnY41WiiqSpaVphFqKaQWNej4soTS9EtV12WJIZsdFEWD7CqS0+0C0GJz4BQOVXgbItshu2xonon5QYC0iy3nwts3KuzD9dgfsIhApok8MNTIVpo5vjpg4KcAdJanexmVofmDHYL18NRz86sLmtKl1CFynsFQi2R7CdrAUCv0cGwMtJ5AEtKPLIx2GdCtpAsoAS8r9aErT6oN54j4SrcOZWZao20t4Pkvs7cw2ju4e4I/WX3kaw/oBaHDU1vzls65QKhKBtN9Ciko1tDcScGQIDAQAB",
   "version": "0.1",
   "action": {
     "default_icon": "32.png",
